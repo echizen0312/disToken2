@@ -20,7 +20,9 @@
                 </mu-list-item>
                 <mu-list-item button :ripple="false">
                     <mu-list-item-action>
-                        <mu-icon value="linear_scale"></mu-icon>
+                        <div class="net-logo" :style="{backgroundColor: configList[account.netId].netColor}">{{
+                            configList[account.netId].netName[0] }}
+                        </div>
                     </mu-list-item-action>
                     <mu-list-item-title style="font-size: 20px; letter-spacing: 1px;">{{
                         configList[account.netId].netName }}
@@ -40,17 +42,18 @@
             <template v-for="(token, index) in tokenList">
                 <div class="token-item" :key="token.symbol + index">
                     <!--<div class="left">-->
-                        <!--<mu-icon value="style"></mu-icon>-->
+                    <!--<mu-icon value="style"></mu-icon>-->
                     <!--</div>-->
-                    <div class="center">
+                    <div class="center" @click="goTransferList(token)">
                         <div style="width: auto; display: flex; flex-direction: column;">
                             <div style="font-size: 18px; color: #263238;">{{token.symbol}}</div>
                             <div style="font-size: 12px;">{{token.code}}</div>
                         </div>
-                        <div style="flex: 1; text-align: right; font-size: 18px; color: #263238;">2.0001</div>
+                        <div style="flex: 1; text-align: right; font-size: 21px; color: #263238;">{{token.balance}}
+                        </div>
                     </div>
                     <div class="right">
-                        <mu-button icon color="error">
+                        <mu-button icon color="error" @click="goTransfer(token)">
                             <mu-icon value="swap_horiz"></mu-icon>
                         </mu-button>
                     </div>
@@ -106,9 +109,8 @@
         data() {
             return {
                 configList: configList,
-                config: null,
                 netId: '',
-                account_id: null,
+                id: null,
                 account: {
                     id: 0,
                     name: '',
@@ -142,15 +144,15 @@
         },
         created() {
             let self = this
-            self.account_id = self.$route.params.id
+            self.id = self.$route.params.id
             self.account = null
             let tmp = self.$parent.accountList
             for (let i in tmp) {
-                if (tmp[i].id == self.account_id) {
+                if (tmp[i].id == self.id) {
                     self.account = tmp[i]
                 }
             }
-            if (self.account != null) {
+            if (self.account != null && self.configList[self.account.netId] != undefined) {
                 let configObj = self.configList[self.account.netId]
                 if (configObj == undefined) {
                     self.$router.replace('/AccountList')
@@ -274,6 +276,10 @@
                 })
             },
             getBalancese() {
+                let self = this
+                self.$parent.getBalancese(self.netId, self.tokenList, self.account, function () {
+                    // console.log(r)
+                })
             },
             doCopy() {
                 let self = this
@@ -287,57 +293,14 @@
                 let self = this
                 self.$parent.doExport(self.account)
             },
-            getSysBalance() {
-                let self = this
-                let config = self.config
-                config.keyProvider = self.account.key
-                let eos = Eos(config)
-                eos.getCurrencyBalance({
-                    code: self.sysToken.account,
-                    account: self.account.name,
-                    symbol: self.sysToken.name
-                }).then(result => {
-                    if (result.length === 0) {
-                        self.sysToken.balance = 0
-                    } else {
-                        self.sysToken.balance = Number.parseFloat(result[0].split(' EOS')[0])
-                    }
-                }).catch(error => {
-                    console.log(error)
-                    self.sysToken.balance = 0
-                })
-            },
-            getUserBalance() {
-                let self = this
-                let config = self.config
-                config.keyProvider = self.account.key
-                let eos = Eos(config)
-                for (let i in self.userToken) {
-                    let token = self.userToken[i]
-                    eos.getCurrencyBalance({
-                        code: token.account,
-                        account: self.account.name,
-                        symbol: token.name
-                    }).then(result => {
-                        if (result.length === 0) {
-                            token.balance = 0
-                        } else {
-                            token.balance = Number.parseFloat(result[0].split(` ${token.name}`)[0])
-                        }
-                    }).catch(error => {
-                        console.log(error)
-                        token.balance = 0
-                    })
-                }
-            },
             goTransfer(token) {
-                this.$router.push('/Transfer/' + this.account_id + '/' + token.name)
+                this.$router.push('/Transfer/' + this.id + '/' + token.code + '/' + token.symbol)
             },
             goTransferList(token) {
-                this.$router.push('/TransferList/' + this.account_id + '/' + token.name)
+                this.$router.push('/TransferList/' + this.id + '/' + token.code + '/' + token.symbol)
             },
             qrClick() {
-                this.$router.push('/QrCode/' + this.account_id)
+                this.$router.push('/QrCode/' + this.id)
             }
         }
     }
@@ -346,7 +309,7 @@
 <style scoped>
     .token-item {
         /*margin-bottom: 10px;*/
-        padding: 2px 4px 2px 16px;
+        padding: 3px 4px 3px 16px;
         display: flex;
         flex-direction: row;
         justify-content: flex-start;
@@ -383,6 +346,18 @@
 
     .mu-divider.inset {
         width: auto !important;
+    }
 
+    .net-logo {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+        font-size: 16px;
+        font-weight: bolder;
+        color: #ffffff;
+        margin-right: 10px;
     }
 </style>

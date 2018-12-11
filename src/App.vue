@@ -102,6 +102,12 @@
                 }
             },
             //=========================== EOS ===========================
+            getKeys() {
+                return ecc.randomKey()
+            },
+            privateToPublic(privateKey) {
+                return ecc.privateToPublic(privateKey)
+            },
             getAccountNameFromPK(id, pk, callback) {
                 let self = this
                 if (self.configList[id] != undefined) {
@@ -153,6 +159,7 @@
                     }
                 }).catch(e => {
                     console.log(e)
+                    self.$alert('交易密码错误', '提示', {type: 'error'})
                 })
             },
             getAccount(id, acc, callback) {
@@ -173,32 +180,177 @@
                     callback({success: false, msg: '不支持这条链', result: false})
                 }
             },
-            transfer(id, pk, code, quantity, from, to, memo, callback) {
+            getBalancese(id, tokens, acc, callback) {
                 let self = this
                 if (self.configList[id] != undefined) {
                     let tmp = self.configList[id]
                     let config = {
                         chainId: tmp.chainId,
-                        keyProvider: pk,
-                        httpEndpoint: tmp.eosAddress,
-                        authorization: `${from}@active`
+                        httpEndpoint: tmp.eosAddress
                     }
-                    let eos = Eos(config)
-                    eos.contract(code).then(contract => {
-                        contract.transfer(from, to, quantity, memo).then(result => {
-                            console.log(result)
-                            callback({success: true, msg: '转账成功', result: result})
+                    let eos = Eos.modules.api(config)
+                    let ps = []
+                    for (let i in tokens) {
+                        let token = tokens[i]
+                        let p = eos.getCurrencyBalance(token.code, acc.name, token.symbol).then(result => {
+                            if (result.length === 0) {
+                                token.balance = 0
+                            } else {
+                                token.balance = Number.parseFloat(result[0].split(` ${token.symbol}`)[0])
+                            }
                         }).catch(error => {
                             console.log(error)
-                            callback({success: false, msg: '转账失败', result: error})
+                            token.balance = 0
                         })
+                        ps.push(p)
+                    }
+                    Promise.all(ps).then(() => {
+                        callback({success: true, msg: '获取成功', result: tokens})
                     }).catch(error => {
-                        console.log(error)
-                        callback({success: false, msg: '合约错误', result: error})
+                        callback({success: false, msg: '链接口错误', result: error})
                     })
                 } else {
                     callback({success: false, msg: '不支持这条链', result: false})
                 }
+            },
+            getTransferList(id, acc, code, symbol, direction, isMain, callback) {
+                let self = this
+                if (self.configList[id] != undefined) {
+                    let tmp = self.configList[id]
+                    let config = {
+                        chainId: tmp.chainId,
+                        httpEndpoint: tmp.eosAddress
+                    }
+                    let eos = Eos.modules.api(config)
+                    if (isMain) {
+                        self.$http.get(`${tmp.nodeJsAddress}/eosSak/db/GetActions?account_name=${acc.name}&direction=${direction}&code=${code}&symbol=${symbol}`, {}).then(res => {
+                            let data = res.data
+                            let sss = []
+                            if (data.result.length > 0) {
+                                sss = data.result
+                            }
+                            callback({success: true, msg: '获取成功', result: sss})
+                        }, res => {
+                            callback({success: false, msg: '链接口错误', result: res})
+                        })
+                    } else {
+                        eos.getActions(acc.name, -1, -100).then(result => {
+                            result = result.actions
+                            result.reverse()
+                            let sss = []
+                            for (let i in result) {
+                                let obj = result[i]
+                                let objA
+                                if (obj != undefined && obj.act != undefined) {
+                                    objA = obj
+                                } else if (obj != undefined && obj.action_trace != undefined) {
+                                    objA = obj.action_trace
+                                } else {
+                                    continue
+                                }
+                                if (objA.receipt.receiver == acc.name
+                                    && objA.act.account == code
+                                    && objA.act.name == 'transfer') {
+                                    let cache = objA.act.data.quantity.split(' ')
+                                    if (cache.length == 2 && cache[1] == symbol) {
+                                        if (direction == 'all' && (objA.act.data.to == acc.name || objA.act.data.from == acc.name)) {
+                                            sss.push({
+                                                trx_id: objA.trx_id,
+                                                account: objA.act.account,
+                                                name: objA.act.name,
+                                                data: objA.act.data,
+                                                seq: obj.account_action_seq,
+                                                time: obj.block_time
+                                            })
+                                        } else if (direction == 'in' && objA.act.data.to == acc.name) {
+                                            sss.push({
+                                                trx_id: objA.trx_id,
+                                                account: objA.act.account,
+                                                name: objA.act.name,
+                                                data: objA.act.data,
+                                                seq: obj.account_action_seq,
+                                                time: obj.block_time
+                                            })
+                                        } else if (direction == 'out' && objA.act.data.from == acc.name) {
+                                            sss.push({
+                                                trx_id: objA.trx_id,
+                                                account: objA.act.account,
+                                                name: objA.act.name,
+                                                data: objA.act.data,
+                                                seq: obj.account_action_seq,
+                                                time: obj.block_time
+                                            })
+                                        } else {
+                                            continue
+                                        }
+                                    }
+                                    if (sss.length == 10) {
+                                        break
+                                    }
+                                }
+                            }
+                            callback({success: true, msg: '获取成功', result: sss})
+                        }).catch(error => {
+                            callback({success: false, msg: '链接口错误', result: error})
+                        })
+                    }
+                } else {
+                    callback({success: false, msg: '不支持这条链', result: false})
+                }
+            },
+            transfer(id, acc, code, quantity, from, to, memo, callback) {
+                let self = this
+                self.$prompt('请输入交易密码', '提示', {inputType: 'password'}).then(data => {
+                    if (data.result && data.value != undefined && data.value != '') {
+                        const loading = self.$loading()
+                        setTimeout(function () {
+                            let bytes = CryptoJS.AES.decrypt(acc.key, data.value)
+                            let plaintext = ''
+                            try {
+                                plaintext = bytes.toString(CryptoJS.enc.Utf8)
+                            } catch (e) {
+                                loading.close()
+                                callback({success: false, msg: '交易密码错误', result: e})
+                                return
+                            }
+                            if (plaintext != '') {
+                                if (self.configList[id] != undefined) {
+                                    let tmp = self.configList[id]
+                                    let config = {
+                                        chainId: tmp.chainId,
+                                        keyProvider: plaintext,
+                                        httpEndpoint: tmp.eosAddress,
+                                        authorization: `${from}@active`
+                                    }
+                                    let eos = Eos(config)
+                                    eos.contract(code).then(contract => {
+                                        contract.transfer(from, to, quantity, memo).then(result => {
+                                            // console.log(result)
+                                            loading.close()
+                                            callback({success: true, msg: '转账成功', result: result})
+                                        }).catch(error => {
+                                            // console.log(error)
+                                            loading.close()
+                                            callback({success: false, msg: '转账失败', result: error})
+                                        })
+                                    }).catch(error => {
+                                        // console.log(error)
+                                        loading.close()
+                                        callback({success: false, msg: '合约错误', result: error})
+                                    })
+                                } else {
+                                    loading.close()
+                                    callback({success: false, msg: '不支持这条链', result: false})
+                                }
+                            } else {
+                                loading.close()
+                                callback({success: false, msg: '交易密码错误', result: false})
+                            }
+                        }, 500)
+                    }
+                }).catch(e => {
+                    callback({success: false, msg: '交易密码错误', result: e})
+                })
             }
         }
     }

@@ -214,7 +214,7 @@
     }
 
     .account-name {
-        font-size: 34px;
+        font-size: 32px;
         font-weight: 300;
         letter-spacing: 4px;
     }
