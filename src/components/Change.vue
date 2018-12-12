@@ -127,7 +127,7 @@
                             t_memo = self.form.to + '@MainNet@' + self.form.memo
                         }
 
-                        self.$parent.transfer(self.configObj.netId, self.account, self.code, quantity, self.account.name, t_to, t_memo, function (r) {
+                        self.$parent.transfer(self.configObj.netId, self.account, self.code, quantity, self.account.name, t_to, t_memo, '', function (r) {
                             if (r.success) {
                                 // console.log(r)
                                 let trx_id = r.result.transaction_id

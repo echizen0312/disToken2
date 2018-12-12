@@ -115,7 +115,7 @@
                 if (self.account.name != '' && self.form.to !== '' && isNum && f > 0 && !self.isTring) {
                     self.form.number = s
                     let quantity = s + ' ' + self.symbol
-                    self.$parent.transfer(self.configObj.netId, self.account, self.code, quantity, self.account.name, self.form.to, self.form.memo, function (r) {
+                    self.$parent.transfer(self.configObj.netId, self.account, self.code, quantity, self.account.name, self.form.to, self.form.memo, '', function (r) {
                         if (r.success) {
                             // console.log(r)
                             let trx_id = r.result.transaction_id

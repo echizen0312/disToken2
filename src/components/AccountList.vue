@@ -81,8 +81,7 @@
         },
         created() {
             let self = this
-            self.$emit('setTop', {back: false, add: true, qr: false, path: '1'});
-
+            self.$emit('setTop', {back: false, add: true, qr: false, path: '1'})
         },
         methods: {
             addClick() {

@@ -44,6 +44,7 @@
 <script>
     /* eslint-disable no-undef */
     import QrcodeVue from 'qrcode.vue'
+    let CryptoJS = require("crypto-js")
 
     export default {
         name: 'QrCode',
@@ -93,6 +94,7 @@
                 }
                 self.value = JSON.stringify(obj)
 
+                self.lastId = -1
                 self.isRun = true
                 self.T = setInterval(function () {
                     self.QueryTask()
@@ -127,19 +129,9 @@
                         try {
                             let obj = JSON.parse(plaintext)
                             if (obj.head == 'disToken_MSG' && obj.type == 'pos_pay') {
-                                self.token_name = obj.msg.token
-                                if (self.token_name == self.sysToken.name) {
-                                    self.nowToken = self.sysToken
-                                }
-                                if (self.pluginToken.length > 0) {
-                                    self.userToken = self.userToken.concat(self.pluginToken)
-                                }
-                                for (let i in self.userToken) {
-                                    if (self.userToken[i].name == self.token_name) {
-                                        self.nowToken = self.userToken[i]
-                                    }
-                                }
-                                if (self.nowToken.name != '' && self.isRun) {
+                                self.code = obj.msg.code
+                                self.symbol = obj.msg.symbol
+                                if (self.code != '' && self.symbol != '' && self.isRun) {
                                     self.isRun = false
                                     if (self.T != null) {
                                         clearInterval(self.T)
@@ -163,116 +155,31 @@
             },
             QueryNewMsg: function (id, cb) {
                 let self = this
-                let config = self.config
-                let eos = Eos(config)
-                let accountName = self.account.name
-                let pos = -1
-                let offset = -10
-                eos.getActions(accountName, pos, offset).then(result => {
-                    let actions = result.actions
-                    let list = []
-                    let res = {
-                        datas: [],
-                        lastId: -1
+                self.$parent.queryNewMsg(self.configObj.netId, self.account, id, function (r) {
+                    if (r.success) {
+                        cb(r.result)
+                    } else {
+                        // cb(false)
                     }
-                    for (let i in actions) {
-                        let tmp = actions[i]
-                        if (tmp.action_trace.receipt.receiver == accountName && tmp.action_trace.act.name == 'transfer' && tmp.action_trace.act.account == 'sakmsg' && tmp.action_trace.act.data.to == accountName)
-                            list.push(tmp)
-                    }
-                    res.lastId = actions.length == 0 ? 0 : actions[actions.length - 1].account_action_seq
-                    if (list.length > 0) {
-                        for (let i in list) {
-                            let obj = list[i]
-                            let data = {
-                                id: -1,
-                                time: '',
-                                from: '',
-                                memo: ''
-                            }
-                            data.id = obj.account_action_seq
-                            data.time = obj.block_time
-                            data.from = obj.action_trace.act.data.from
-                            data.memo = obj.action_trace.act.data.memo
-                            if (data.id > id || data.id == 0) {
-                                res.datas.push(data)
-                            }
-                            if (i == list.length - 1) {
-                                res.lastId = data.id
-                            }
-                        }
-                    }
-                    cb(res)
-                }).catch(error => {
-                    console.log(error)
                 })
             },
             transferBalance: function () {
                 let self = this
                 if (self.account.name != '' && self.form.to !== '' && Number.parseFloat(self.form.number) > 0 && !self.isTring) {
-                    self.$prompt(`付款给 ${self.form.to} 金额 ${self.form.number} ${self.nowToken.name}`, '请输入交易密码', {inputType: 'password'}).then(data => {
-                        const loading = self.$loading()
-                        setTimeout(function () {
-                            if (data.result && data.value != undefined && data.value != '') {
-                                let bytes = CryptoJS.AES.decrypt(self.account.key, data.value)
-                                let plaintext = ''
-                                try {
-                                    plaintext = bytes.toString(CryptoJS.enc.Utf8)
-                                } catch (e) {
-                                    loading.close()
-                                    self.$alert('交易密码错误', '提示', {type: 'error'})
-                                    return
-                                }
-                                self.isTring = true
-                                let config = self.config
-                                config.keyProvider = plaintext
-                                config.authorization = `${self.account.name}@active`
-                                let eos = Eos(config)
-                                let quantity = self.form.number.toString() + ' ' + self.nowToken.name
-                                if (self.nowToken.isSys) {
-                                    eos.transfer(self.account.name, self.form.to, quantity, self.form.memo).then(result => {
-                                        let trx_id = result.transaction_id
-                                        self.trx_id = trx_id
-                                        loading.close()
-                                        self.isTring = false
-                                        self.isOver = true
-                                        self.$alert('转账成功', '提示', {type: 'success'})
-                                    }).catch(error => {
-                                        loading.close()
-                                        console.log(error)
-                                        self.isTring = false
-                                        self.$alert('转账失败', '提示', {type: 'error'})
-                                    })
-                                } else {
-                                    eos.contract(self.nowToken.account).then(con => {
-                                        con.transfer(self.account.name, self.form.to, quantity, self.form.memo).then(result => {
-                                            let trx_id = result.transaction_id
-                                            self.trx_id = trx_id
-                                            loading.close()
-                                            self.isTring = false
-                                            self.isOver = true
-                                            self.$alert('转账成功', '提示', {type: 'success'})
-                                        }).catch(error => {
-                                            loading.close()
-                                            console.log(error)
-                                            self.isTring = false
-                                            self.$alert('转账失败', '提示', {type: 'error'})
-                                        })
-                                    }).catch(error => {
-                                        loading.close()
-                                        console.log(error)
-                                        self.isTring = false
-                                        self.$alert('转账失败', '提示', {type: 'error'})
-                                    })
-                                }
-                            } else {
-                                loading.close()
-                            }
-                        }, 500)
-                    }).catch(e => {
-                        console.log(e)
+                    let text = `交易给 ${self.form.to} 代币 ${self.form.number} ${self.symbol}`
+                    let quantity = self.form.number.toString() + ' ' + self.symbol
+                    self.$parent.transfer(self.configObj.netId, self.account, self.code, quantity, self.account.name, self.form.to, self.form.memo, text, function (r) {
+                        if (r.success) {
+                            // console.log(r)
+                            let trx_id = r.result.transaction_id
+                            self.trx_id = trx_id
+                            self.isTring = false
+                            self.isOver = true
+                            self.$alert('转账成功', '提示', {type: 'success'})
+                        } else {
+                            self.$alert(r.msg, '提示', {type: 'error'})
+                        }
                     })
-
                 }
             },
             goBack() {
@@ -283,7 +190,7 @@
                 self.$router.go(-1);
             },
             goTracker() {
-                window.open(this.trackerAddress + '' + this.trx_id)
+                window.open(this.configObj.trackerAddress + '' + this.trx_id)
             }
         }
     }

@@ -24,7 +24,7 @@
         <mu-bottom-nav style="width: 100%; position: fixed; bottom: 0; border-top: 1px solid #e0e0e0;"
                        @change="handleSelect" :value="path">
             <mu-bottom-nav-item title="钱包" value="1" icon="credit_card"></mu-bottom-nav-item>
-            <mu-bottom-nav-item title="游戏" value="2" icon="videogame_asset"></mu-bottom-nav-item>
+            <mu-bottom-nav-item title="游戏" value="2" icon="videogame_asset" v-show="false"></mu-bottom-nav-item>
             <mu-bottom-nav-item title="创建" value="9" icon="person_add"></mu-bottom-nav-item>
         </mu-bottom-nav>
     </div>
@@ -62,7 +62,27 @@
                     self.accountList.push(tmp[i])
                 }
             }
-            // self.$router.replace('/AccountList')
+            for (let i in configList) {
+                let tmp = configList[i]
+                if (tmp.pluginTokenUrl.url != '' && !tmp.pluginTokenUrl.isLoaded) {
+                    self.$http.get(`${tmp.pluginTokenUrl.url}`, {}).then(res => {
+                        let r = res.data
+                        for (let j in r) {
+                            let o = r[j]
+                            tmp.tokenList.push({
+                                code: o.account,
+                                symbol: o.name,
+                                balance: 0
+                            })
+                        }
+                        tmp.pluginTokenUrl.isLoaded = true
+                    }, () => {
+                        console.log('plugin error')
+                    })
+                } else {
+                    continue
+                }
+            }
         },
         methods: {
             handleSelect(value) {
@@ -298,9 +318,61 @@
                     callback({success: false, msg: '不支持这条链', result: false})
                 }
             },
-            transfer(id, acc, code, quantity, from, to, memo, callback) {
+            queryNewMsg(id, acc, qid, callback) {
                 let self = this
-                self.$prompt('请输入交易密码', '提示', {inputType: 'password'}).then(data => {
+                if (self.configList[id] != undefined) {
+                    let tmp = self.configList[id]
+                    let config = {
+                        chainId: tmp.chainId,
+                        httpEndpoint: tmp.eosAddress
+                    }
+                    let eos = Eos.modules.api(config)
+                    eos.getActions(acc.name, -1, -10).then(result => {
+                        let actions = result.actions
+                        let list = []
+                        let res = {
+                            datas: [],
+                            lastId: -1
+                        }
+                        for (let i in actions) {
+                            let tmp = actions[i]
+                            if (tmp.action_trace.receipt.receiver == acc.name && tmp.action_trace.act.name == 'transfer' && tmp.action_trace.act.account == 'sakmsg' && tmp.action_trace.act.data.to == acc.name)
+                                list.push(tmp)
+                        }
+                        res.lastId = actions.length == 0 ? 0 : actions[actions.length - 1].account_action_seq
+                        if (list.length > 0) {
+                            for (let i in list) {
+                                let obj = list[i]
+                                let data = {
+                                    id: -1,
+                                    time: '',
+                                    from: '',
+                                    memo: ''
+                                }
+                                data.id = obj.account_action_seq
+                                data.time = obj.block_time
+                                data.from = obj.action_trace.act.data.from
+                                data.memo = obj.action_trace.act.data.memo
+                                if (data.id > qid || data.id == 0) {
+                                    res.datas.push(data)
+                                }
+                                if (i == list.length - 1) {
+                                    res.lastId = data.id
+                                }
+                            }
+                        }
+                        callback({success: true, msg: '获取成功', result: res})
+                    }).catch(error => {
+                        callback({success: false, msg: '链接口错误', result: error})
+                    })
+                } else {
+                    callback({success: false, msg: '不支持这条链', result: false})
+                }
+            },
+            transfer(id, acc, code, quantity, from, to, memo, text, callback) {
+                let self = this
+                let t = text == '' ? '请输入交易密码' : text
+                self.$prompt(t, '提示', {inputType: 'password'}).then(data => {
                     if (data.result && data.value != undefined && data.value != '') {
                         const loading = self.$loading()
                         setTimeout(function () {
