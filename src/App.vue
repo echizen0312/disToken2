@@ -7,7 +7,7 @@
             <mu-button icon slot="left" v-show="!back">
                 <mu-icon value=""></mu-icon>
             </mu-button>
-            <span>{{ title }}</span>
+            <span @click="test">{{ title }}</span>
             <mu-button icon slot="right" v-show="add" @click="goAdd">
                 <mu-icon value="add"></mu-icon>
             </mu-button>
@@ -24,8 +24,9 @@
         <mu-bottom-nav style="width: 100%; position: fixed; bottom: 0; border-top: 1px solid #e0e0e0;"
                        @change="handleSelect" :value="path">
             <mu-bottom-nav-item title="钱包" value="1" icon="credit_card"></mu-bottom-nav-item>
-            <mu-bottom-nav-item title="游戏" value="2" icon="videogame_asset" v-show="false"></mu-bottom-nav-item>
-            <mu-bottom-nav-item title="创建" value="9" icon="person_add"></mu-bottom-nav-item>
+            <mu-bottom-nav-item title="游戏" value="2" icon="videogame_asset" v-show="canGame"></mu-bottom-nav-item>
+            <mu-bottom-nav-item title="买币" value="3" icon="store" v-show="canOTC"></mu-bottom-nav-item>
+            <mu-bottom-nav-item title="创建" value="9" icon="person_add" v-show="!canGame && !canOTC"></mu-bottom-nav-item>
         </mu-bottom-nav>
     </div>
 </template>
@@ -47,7 +48,9 @@
                 title: title,
                 back: false,
                 add: false,
-                qr: false
+                qr: false,
+                canGame: canGame,
+                canOTC: canOTC
             }
         },
         created() {
@@ -93,6 +96,9 @@
                 }
                 if (value == '2') {
                     self.$router.replace('/GameList')
+                }
+                if (value == '3') {
+                    location.href = 'http://c2c.naturetoken.io/'
                 }
                 if (value == '9') {
                     self.$router.replace('/CreateAccount')
@@ -423,6 +429,60 @@
                 }).catch(e => {
                     callback({success: false, msg: '交易密码错误', result: e})
                 })
+            },
+            transaction(id, acc, tr, text, callback) {
+                let self = this
+                let t = text == '' ? '请输入交易密码' : text
+                self.$prompt(t, '提示', {inputType: 'password'}).then(data => {
+                    if (data.result && data.value != undefined && data.value != '') {
+                        const loading = self.$loading()
+                        setTimeout(function () {
+                            let bytes = CryptoJS.AES.decrypt(acc.key, data.value)
+                            let plaintext = ''
+                            try {
+                                plaintext = bytes.toString(CryptoJS.enc.Utf8)
+                            } catch (e) {
+                                loading.close()
+                                callback({success: false, msg: '交易密码错误', result: e})
+                                return
+                            }
+                            if (plaintext != '') {
+                                if (self.configList[id] != undefined) {
+                                    let tmp = self.configList[id]
+                                    let config = {
+                                        chainId: tmp.chainId,
+                                        keyProvider: plaintext,
+                                        httpEndpoint: tmp.eosAddress,
+                                        authorization: `${acc.name}@active`
+                                    }
+                                    let eos = Eos(config)
+                                    eos.transaction(tr).then(result => {
+                                        console.log(result)
+                                        loading.close()
+                                        callback({success: true, msg: '交易成功', result: result})
+                                    }).catch(error => {
+                                        console.log(error)
+                                        loading.close()
+                                        callback({success: false, msg: '交易失败', result: error})
+                                    })
+                                } else {
+                                    loading.close()
+                                    callback({success: false, msg: '不支持这条链', result: false})
+                                }
+                            } else {
+                                loading.close()
+                                callback({success: false, msg: '交易密码错误', result: false})
+                            }
+                        }, 500)
+                    }
+                }).catch(e => {
+                    callback({success: false, msg: '交易密码错误', result: e})
+                })
+            },
+            //======================== test ========================
+            test() {
+                let self = this
+                console.log(self.title)
             }
         }
     }

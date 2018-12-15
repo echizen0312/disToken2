@@ -1,17 +1,24 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
         <mu-paper class="account-item" :z-depth="3" style="padding: 12px;" v-if="accountList.length == 0"
-                  @click="addClick()">
+                  @click="addClick">
             <div class="account-item-center">
                 <div class="account-item-center-center" style="justify-content: center;">
-                    <span style="font-size: 18px;">没有账户，请先导入</span>
-
+                    <span style="font-size: 18px;">没有账户，点我导入</span>
+                </div>
+            </div>
+        </mu-paper>
+        <mu-paper class="account-item" :z-depth="3" style="padding: 12px;" v-if="accountList.length == 0"
+                  @click="createClick">
+            <div class="account-item-center">
+                <div class="account-item-center-center" style="justify-content: center;">
+                    <span style="font-size: 18px;">或者点我创建一个</span>
                 </div>
             </div>
         </mu-paper>
         <mu-paper class="account-item" :z-depth="3" v-for="(account, index) in accountList"
                   :key="account.id + '_' + index"
-                  v-show="configList[account.netId] != undefined"
+                  v-if="configList[account.netId] != undefined"
                   @click="accountClick(account)">
             <div class="account-item-head" :style="{backgroundColor: configList[account.netId].netColor}"></div>
             <div class="account-item-top">
@@ -53,7 +60,9 @@
                     <mu-text-field v-model="form.aesKey" type="password"></mu-text-field>
                 </mu-form-item>
             </mu-form>
-            <mu-button slot="actions" flat color="primary" @click="closeAlertDialog" style="margin-right: 8px;">关闭
+            <mu-button slot="actions" textColor="error" @click="closeAlertDialog">关闭
+            </mu-button>
+            <mu-button slot="actions" textColor="primary" @click="createClick">创建账户
             </mu-button>
             <mu-button slot="actions" color="primary" @click="submitAlertDialog">确定</mu-button>
         </mu-dialog>
@@ -141,6 +150,10 @@
             accountClick(acc) {
                 let self = this
                 self.$router.push('/Account/' + acc.id)
+            },
+            createClick() {
+                let self = this
+                self.$router.push('/CreateAccount')
             }
         }
     }

@@ -22,7 +22,11 @@
                     <mu-form-item label="备注（可选）">
                         <mu-text-field v-model="form.memo"></mu-text-field>
                     </mu-form-item>
-                    <div style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+                    <div style="margin-bottom: 20px; display: flex; justify-content: space-between;">
+                        <mu-button color="primary" @click="goTransferList">转账记录</mu-button>
+                        <mu-button color="purple" @click="goChange" v-if="symbol == 'NXT' && configObj.canChange">
+                            跨链转账
+                        </mu-button>
                         <mu-button color="error" @click="transferBalance">提交</mu-button>
                     </div>
                 </mu-form>
@@ -131,6 +135,12 @@
             },
             goBack() {
                 this.$router.go(-1);
+            },
+            goTransferList() {
+                this.$router.push('/TransferList/' + this.id + '/' + this.code + '/' + this.symbol)
+            },
+            goChange() {
+                this.$router.push('/Change/' + this.id + '/' + this.code + '/' + this.symbol)
             },
             goTracker() {
                 window.open(this.configObj.trackerAddress + '' + this.trx_id)

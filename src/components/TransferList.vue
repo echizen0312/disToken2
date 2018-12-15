@@ -1,14 +1,14 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
-        <mu-button fab color="red" style="position: fixed; bottom: 75px; right: 20px; z-index: 999;"
-                   @click="goTransfer">
-            <mu-icon value="swap_horiz"></mu-icon>
-        </mu-button>
-        <mu-button v-if="symbol == 'NXT' && configObj.canChange" fab color="purple"
-                   style="position: fixed; bottom: 75px; left: 20px; z-index: 999;"
-                   @click="goChange">
-            <mu-icon value="cached"></mu-icon>
-        </mu-button>
+        <!--<mu-button fab color="red" style="position: fixed; bottom: 75px; right: 20px; z-index: 999;"-->
+                   <!--@click="goTransfer">-->
+            <!--<mu-icon value="swap_horiz"></mu-icon>-->
+        <!--</mu-button>-->
+        <!--<mu-button v-if="symbol == 'NXT' && configObj.canChange" fab color="purple"-->
+                   <!--style="position: fixed; bottom: 75px; left: 20px; z-index: 999;"-->
+                   <!--@click="goChange">-->
+            <!--<mu-icon value="cached"></mu-icon>-->
+        <!--</mu-button>-->
         <mu-card
                 style="width: 100%; margin-bottom: 80px; text-align: left; position: relative;">
             <mu-card-title :title="symbol + ' 转账记录（近10条）'"></mu-card-title>
@@ -206,7 +206,7 @@
                 let self = this
                 let isMain = false
                 if (self.configObj.eosAddress == 'http://39.105.44.204:8888') {
-                    isMain = true
+                    isMain = false
                 } else {
                     isMain = false
                 }

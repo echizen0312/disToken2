@@ -44,7 +44,7 @@
                     <!--<div class="left">-->
                     <!--<mu-icon value="style"></mu-icon>-->
                     <!--</div>-->
-                    <div class="center" @click="goTransferList(token)">
+                    <div class="center" @click="goTransfer(token)">
                         <div style="width: auto; display: flex; flex-direction: column;">
                             <div style="font-size: 18px; color: #263238;">{{token.symbol}}</div>
                             <div style="font-size: 12px;">{{token.code}}</div>
@@ -53,14 +53,15 @@
                         </div>
                     </div>
                     <div class="right">
-                        <mu-button icon color="error" @click="goTransfer(token)">
-                            <mu-icon value="swap_horiz"></mu-icon>
-                        </mu-button>
+                        <!--<mu-button icon color="error" @click="goTransfer(token)">-->
+                        <!--<mu-icon value="swap_horiz"></mu-icon>-->
+                        <!--</mu-button>-->
+                        <div v-if="$parent.canOTC" class="otc-button" @click="goOTC">购买</div>
+                        <div v-else class="otc-button" @click="goTransfer(token)">转账</div>
                     </div>
                 </div>
                 <mu-divider inset :key="'d_' + index"></mu-divider>
             </template>
-
         </mu-card>
         <mu-card
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
@@ -142,6 +143,12 @@
                 canQRPay: false
             }
         },
+        watch: {
+            tokenList: function () {
+                let self = this
+                self.getBalancese()
+            }
+        },
         created() {
             let self = this
             self.id = self.$route.params.id
@@ -159,37 +166,10 @@
                 } else {
                     self.netId = configObj.netId
                     self.tokenList = configObj.tokenList
-                    self.pluginTokenUrl = configObj.pluginTokenUrl
                     self.canQRPay = configObj.canQRPay
                     self.$emit('setTop', {back: true, add: false, qr: self.canQRPay, path: '1'})
                     self.getAccount()
                     self.getBalancese()
-                    // if (self.pluginToken.length == 0 && configObj.pluginTokenUrl != '') {
-                    //     self.$http.get(`${configObj.pluginTokenUrl}`, {}).then(res => {
-                    //         let r = res.data
-                    //         configList[self.account.netName].pluginToken = r
-                    //         configObj.pluginToken = r
-                    //         self.pluginToken = r
-                    //         self.userToken = self.userToken.concat(self.pluginToken)
-                    //         self.getAccount(self.account)
-                    //         self.getSysBalance()
-                    //         self.getUserBalance()
-                    //     }, () => {
-                    //         self.getAccount(self.account)
-                    //         self.getSysBalance()
-                    //         self.getUserBalance()
-                    //     })
-                    // } else if (self.pluginToken.length > 0 && configObj.pluginTokenUrl != '') {
-                    //     self.userToken = self.userToken.concat(self.pluginToken)
-                    //     self.getAccount(self.account)
-                    //     self.getSysBalance()
-                    //     self.getUserBalance()
-                    // } else {
-                    //     self.getAccount(self.account)
-                    //     self.getSysBalance()
-                    //     self.getUserBalance()
-                    // }
-
                 }
             } else {
                 self.$router.replace('/AccountList')
@@ -301,7 +281,10 @@
             },
             qrClick() {
                 this.$router.push('/QrCode/' + this.id)
-            }
+            },
+            goOTC() {
+                location.href = 'http://c2c.naturetoken.io/'
+            },
         }
     }
 </script>
@@ -359,5 +342,14 @@
         font-weight: bolder;
         color: #ffffff;
         margin-right: 10px;
+    }
+
+    .otc-button {
+        font-size: 12px;
+        margin-right: 6px;
+        padding: 2px 8px 2px 8px;
+        border-radius: 5px;
+        color: white;
+        background-color: #2095f2;
     }
 </style>
