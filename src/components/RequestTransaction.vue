@@ -89,7 +89,7 @@
                 let self = this
                 self.$parent.transaction(self.netId, self.account, self.tr, '', function (r) {
                     if (r.success) {
-                        self.$alert('转账成功', '提示', {type: 'success'}).then(() => {
+                        self.$alert('交易成功，将跳转回原页面', '提示', {type: 'success'}).then(() => {
                             history.back()
                         })
                     } else {

@@ -8,6 +8,7 @@
             <div style="padding: 10px 15px 5px 15px; ">
                 <mu-form :model="form" label-position="top" style="">
                     <mu-form-item label="代币">
+                        <!--<mu-text-field :value="symbol + ' - ' + code + ''" readonly></mu-text-field>-->
                         <mu-text-field :value="symbol" readonly></mu-text-field>
                     </mu-form-item>
                     <mu-form-item label="发送者">

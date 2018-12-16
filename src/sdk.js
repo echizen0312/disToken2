@@ -1,4 +1,4 @@
-// NXT_01
+// NXT_02
 export default {
     NXT_GetAccount: function () {
         let path = location.href
@@ -22,7 +22,9 @@ export default {
     },
     NXT_RequestTransaction: function (account, tr) {
         if (account != null && account.netId != undefined && account.name != undefined) {
-            let url = `http://10.255.1.25:8080/disToken/#/RequestTransaction/${account.netId}/${account.name}/${JSON.stringify(tr)}`
+            let isTest = false
+            let address = isTest ? 'http://10.255.1.25:8080/disToken' : 'http://w.naturetoken.io/nxt_w'
+            let url = `${address}/#/RequestTransaction/${account.netId}/${account.name}/${JSON.stringify(tr)}`
             location.href = url
         } else {
             return false
