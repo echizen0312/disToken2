@@ -1,8 +1,8 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
-        <mu-card
-                v-if="!isOver && configObj.eosAddress == 'http://39.105.44.204:8888' && symbol == 'NXT'"
-                style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
+        <!--<mu-card v-if="!isOver && configObj.eosAddress == 'http://39.105.44.204:8888' && symbol == 'NXT'" style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">-->
+        <mu-card v-if="!isOver && configObj.netId == '999' && symbol == 'NXT'"
+                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="主链转到NatureToken"></mu-card-title>
             <mu-divider></mu-divider>
             <div style="padding: 10px 15px 5px 15px; ">
@@ -29,7 +29,7 @@
             </div>
         </mu-card>
         <mu-card
-                v-if="!isOver && configObj.eosAddress == 'http://112.74.52.242:8888' && symbol == 'NXT'"
+                v-if="!isOver && configObj.netId == '002' && symbol == 'NXT'"
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="NatureToken转到主链"></mu-card-title>
             <mu-divider></mu-divider>
@@ -117,12 +117,14 @@
                         let quantity = s + ' ' + self.symbol
                         let t_to = ''
                         let t_memo = ''
-                        if (configObj.eosAddress == 'http://39.105.44.204:8888') {
+                        // if (configObj.eosAddress == 'http://39.105.44.204:8888') {configObj.netId == '999'
+                        if (configObj.netId == '999') {
                             t_to = 'naturetokenp'
                             t_memo = self.form.to + '@NatureToken@' + self.form.memo
 
                         }
-                        if (configObj.eosAddress == 'http://39.105.44.204:8888') {
+                        // if (configObj.eosAddress == 'http://39.105.44.204:8888') {
+                        if (configObj.netId == '002') {
                             t_to = 'naturetokenc'
                             t_memo = self.form.to + '@MainNet@' + self.form.memo
                         }

@@ -26,7 +26,8 @@
             <mu-bottom-nav-item title="钱包" value="1" icon="credit_card"></mu-bottom-nav-item>
             <mu-bottom-nav-item title="游戏" value="2" icon="videogame_asset" v-show="canGame"></mu-bottom-nav-item>
             <mu-bottom-nav-item title="买币" value="3" icon="store" v-show="canOTC"></mu-bottom-nav-item>
-            <mu-bottom-nav-item title="创建" value="9" icon="person_add" v-show="!canGame && !canOTC"></mu-bottom-nav-item>
+            <mu-bottom-nav-item title="创建" value="9" icon="person_add"
+                                v-show="!canGame && !canOTC"></mu-bottom-nav-item>
         </mu-bottom-nav>
     </div>
 </template>
@@ -457,9 +458,13 @@
                                     }
                                     let eos = Eos(config)
                                     eos.transaction(tr).then(result => {
-                                        console.log(result)
+                                        // console.log(result)
                                         loading.close()
-                                        callback({success: true, msg: '交易成功', result: result})
+                                        if (result.processed != undefined && result.transaction_id != undefined) {
+                                            callback({success: true, msg: '交易成功', result: result})
+                                        } else {
+                                            callback({success: false, msg: '交易失败', result: result.error})
+                                        }
                                     }).catch(error => {
                                         console.log(error)
                                         loading.close()
