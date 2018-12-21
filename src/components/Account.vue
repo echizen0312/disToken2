@@ -280,7 +280,7 @@
                 this.$router.push('/TransferList/' + this.id + '/' + token.code + '/' + token.symbol)
             },
             qrClick() {
-                this.$router.push('/QrCode/' + this.id)
+                this.$router.push(`/QrCode/${this.id}`)
             },
             goOTC() {
                 location.href = 'http://c2c.naturetoken.io/'
