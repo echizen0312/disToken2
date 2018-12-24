@@ -7,7 +7,7 @@
             <div style="padding: 10px 18px 18px 18px;" v-if="account != null">
                 <mu-text-field v-model="configObj.netName" label="目标链" readonly full-width></mu-text-field>
                 <mu-text-field v-model="account.name" label="签名账户" readonly full-width></mu-text-field>
-                <mu-text-field v-model="JSON.stringify(tr, null, 4)" label="交易体" readonly multi-line :rows="8"
+                <mu-text-field v-model="JSON.stringify(tr, null, 4)" label="交易体" readonly multi-line :rows="6"
                                full-width></mu-text-field>
                 <div style="display: flex; justify-content: space-between;">
                     <mu-button color="primary" @click="back">返回</mu-button>
@@ -42,7 +42,7 @@
         },
         created() {
             let self = this
-            self.$emit('setTop', {back: false, add: false, qr: false, path: '1'})
+            self.$emit('setTop', {back: false, add: false, qr: false, scan: false, path: '1'})
             self.netId = self.$route.params.netId
             self.accName = self.$route.params.accName
             self.tr = JSON.parse(self.$route.params.tr)
@@ -50,7 +50,7 @@
                 self.configObj = self.configList[self.netId]
                 self.account = self.checkAccount(self.netId, self.accName)
                 if (self.account != null) {
-
+                    console.log('收到请求')
                 } else {
                     self.$alert('没有导入过这个账户', '提示', {
                         type: 'error'

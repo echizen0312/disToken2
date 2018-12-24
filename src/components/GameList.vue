@@ -67,7 +67,7 @@
         },
         created: function () {
             let self = this
-            self.$emit('setTop', {back: false, add: true, qr: false, path: '2'})
+            self.$emit('setTop', {back: false, add: false, qr: false, scan: false, path: '2'})
         },
         methods: {
             canUse(obj) {

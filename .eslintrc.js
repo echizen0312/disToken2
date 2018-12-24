@@ -9,7 +9,9 @@ module.exports = {
     ],
     rules: {
         'no-console': 'off',
-        'no-debugger': 'off'
+        'no-debugger': 'off',
+        'vue/no-use-v-if-with-v-for': 'off',
+        'vue/valid-v-model': 'off'
     },
     parserOptions: {
         parser: 'babel-eslint'

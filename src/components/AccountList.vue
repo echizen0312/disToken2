@@ -60,11 +60,14 @@
                     <mu-text-field v-model="form.aesKey" type="password"></mu-text-field>
                 </mu-form-item>
             </mu-form>
-            <mu-button slot="actions" textColor="error" @click="closeAlertDialog">关闭
-            </mu-button>
+            <!--<mu-button slot="actions" textColor="error" @click="closeAlertDialog">关闭-->
+            <!--</mu-button>-->
             <mu-button slot="actions" textColor="primary" @click="createClick">创建账户
             </mu-button>
             <mu-button slot="actions" color="primary" @click="submitAlertDialog">确定</mu-button>
+            <mu-button style="position: absolute; right: 5px; top: 5px;" icon color="red500" @click="closeAlertDialog">
+                <mu-icon value="close"></mu-icon>
+            </mu-button>
         </mu-dialog>
     </div>
 </template>
@@ -90,7 +93,7 @@
         },
         created() {
             let self = this
-            self.$emit('setTop', {back: false, add: true, qr: false, path: '1'})
+            self.$emit('setTop', {back: false, add: true, qr: false, scan: false, path: '1'})
         },
         methods: {
             addClick() {
@@ -119,6 +122,8 @@
                             }
                             self.$parent.accountList.push(acc)
                             self.$cookies.set('disToken2Accounts', JSON.stringify(self.$parent.accountList), '15d')
+                            let obj = JSON.stringify(self.$parent.accountList)
+                            self.$parent.saveAccounts(obj)
                             self.closeAlertDialog()
                             self.$alert('导入成功', '提示', {type: 'success'})
                         } else {
@@ -146,7 +151,13 @@
                     }
                 }
                 self.$cookies.set('disToken2Accounts', JSON.stringify(self.$parent.accountList))
+                let obj = JSON.stringify(self.$parent.accountList)
+                self.$parent.saveAccounts(obj)
             },
+            // removeAccountAll() {
+            //     let self = this
+            //     self.$parent.accountList.splice(0, self.$parent.accountList.length)
+            // },
             accountClick(acc) {
                 let self = this
                 self.$router.push('/Account/' + acc.id)

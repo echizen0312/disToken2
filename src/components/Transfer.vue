@@ -91,9 +91,14 @@
                 trx_id: ''
             }
         },
+        mounted() {
+            let self = this
+            //将要给原生调用的方法挂载到 window 上面
+            window.natureTokenScanResult = self.natureTokenScanResult
+        },
         created: function () {
             let self = this
-            self.$emit('setTop', {back: true, add: false, qr: false, path: '1'})
+            self.$emit('setTop', {back: true, add: false, qr: false, scan: true, path: '1'})
             self.id = self.$route.params.id
             self.code = self.$route.params.code
             self.symbol = self.$route.params.symbol
@@ -145,6 +150,23 @@
             },
             goTracker() {
                 window.open(this.configObj.trackerAddress + '' + this.trx_id)
+            },
+            //======================== bridge ========================
+            scanClick() {
+                this.$parent.scanQRCode()
+            },
+            natureTokenScanResult(s) {
+                let self = this
+                try {
+                    // s = JSON.parse(s)
+                    if (s.head != undefined && s.name != undefined && s.head == 'disToken_QR') {
+                        self.form.to = s.name
+                    } else {
+                        console.log('非法二维码')
+                    }
+                } catch (e) {
+                    console.log(e)
+                }
             }
         }
     }

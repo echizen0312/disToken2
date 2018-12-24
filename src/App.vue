@@ -14,7 +14,10 @@
             <mu-button icon slot="right" v-show="qr" @click="goQr">
                 <i class="fa fa-qrcode"></i>
             </mu-button>
-            <mu-button icon slot="right" v-show="!add && !qr">
+            <mu-button icon slot="right" v-show="scan" @click="goScan">
+                <mu-icon value="crop_free"></mu-icon>
+            </mu-button>
+            <mu-button icon slot="right" v-show="!add && !qr && !scan">
                 <mu-icon value=""></mu-icon>
             </mu-button>
         </mu-appbar>
@@ -50,20 +53,25 @@
                 back: false,
                 add: false,
                 qr: false,
+                scan: false,
                 canGame: canGame,
                 canOTC: canOTC
             }
         },
         created() {
             let self = this
-            let hasAccs = self.$cookies.isKey('disToken2Accounts')
-            if (hasAccs) {
-                let oldTmp = self.$cookies.get('disToken2Accounts')
-                self.$cookies.set('disToken2Accounts', JSON.stringify([]))
-                self.$cookies.set('disToken2Accounts', oldTmp, '15d')
-                let tmp = JSON.parse(oldTmp)
-                for (let i in tmp) {
-                    self.accountList.push(tmp[i])
+            if (self.pullAccounts()) {
+                console.log('拉取APP数据')
+            } else {
+                let hasAccs = self.$cookies.isKey('disToken2Accounts')
+                if (hasAccs) {
+                    let oldTmp = self.$cookies.get('disToken2Accounts')
+                    self.$cookies.set('disToken2Accounts', JSON.stringify([]))
+                    self.$cookies.set('disToken2Accounts', oldTmp, '15d')
+                    let tmp = JSON.parse(oldTmp)
+                    for (let i in tmp) {
+                        self.accountList.push(tmp[i])
+                    }
                 }
             }
             for (let i in configList) {
@@ -111,6 +119,7 @@
                 self.back = data.back
                 self.add = data.add
                 self.qr = data.qr
+                self.scan = data.scan
                 self.path = data.path
             },
             goBack() {
@@ -126,6 +135,12 @@
                 let self = this
                 if (typeof self.$refs.child.qrClick == 'function') {
                     self.$refs.child.qrClick()
+                }
+            },
+            goScan() {
+                let self = this
+                if (typeof self.$refs.child.scanClick == 'function') {
+                    self.$refs.child.scanClick()
                 }
             },
             //=========================== EOS ===========================
@@ -484,15 +499,40 @@
                     callback({success: false, msg: '交易密码错误', result: e})
                 })
             },
+            //======================== bridge ========================
+            pullAccounts() {
+                let self = this
+                if (window.android_client != undefined) {
+                    let obj = window.android_client.pullAccounts()
+                    obj = JSON.parse(obj)
+                    for (let i in obj) {
+                        self.accountList.push(obj[i])
+                    }
+                    return true
+                } else {
+                    return false
+                }
+            },
+            saveAccounts(s) {
+                if (window.android_client != undefined) {
+                    window.android_client.saveAccounts(s)
+                }
+            },
+            scanQRCode() {
+                if (window.android_client != undefined) {
+                    window.android_client.scanQRCode()
+                }
+            },
             //======================== test ========================
             test() {
-                let self = this
-                console.log(self.title)
+                this.saveAccounts('asdfasdf')
             }
         }
     }
 </script>
 
 <style>
-
+    .mu-dialog {
+        position: relative !important;
+    }
 </style>
