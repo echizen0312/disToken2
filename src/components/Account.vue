@@ -167,7 +167,7 @@
                     self.netId = configObj.netId
                     self.tokenList = configObj.tokenList
                     self.canQRPay = configObj.canQRPay
-                    self.$emit('setTop', {back: true, add: false, qr: self.canQRPay, path: '1'})
+                    self.$emit('setTop', {back: true, add: false, qr: self.canQRPay, scan: false, path: '1'})
                     self.getAccount()
                     self.getBalancese()
                 }

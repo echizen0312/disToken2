@@ -92,7 +92,7 @@
         },
         created() {
             let self = this
-            self.$emit('setTop', {back: true, add: false, qr: false, path: '9'})
+            self.$emit('setTop', {back: true, add: false, qr: false, scan: false, path: '9'})
         },
         computed: {
             vfinished() {

@@ -180,7 +180,7 @@
         },
         created: function () {
             let self = this
-            self.$emit('setTop', {back: true, add: false, qr: false, path: '1'})
+            self.$emit('setTop', {back: true, add: false, qr: false, scan: false, path: '1'})
             self.id = self.$route.params.id
             self.code = self.$route.params.code
             self.symbol = self.$route.params.symbol

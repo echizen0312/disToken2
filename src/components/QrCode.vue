@@ -75,7 +75,7 @@
         },
         created: function () {
             let self = this
-            self.$emit('setTop', {back: true, add: false, qr: false, path: '1'})
+            self.$emit('setTop', {back: true, add: false, qr: false, scan: false, path: '1'})
             self.id = self.$route.params.id
             self.account = null
             let tmp = self.$parent.accountList
