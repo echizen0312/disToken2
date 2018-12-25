@@ -1,6 +1,43 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
-        <mu-card
+        <mu-card v-if="configList[account.netId] != undefined" class="Card_header">
+            <div style="color: #fff;padding: 20px 30px;">
+                <div>
+                    <div class="v_key">
+                        <span>所在链</span>
+                        <span style="padding-left:10px;" v-text="configList[account.netId].netName"></span>
+                        <mu-button style="vertical-align: middle;" icon color="info" @click="doExport">
+                            <mu-icon value="vpn_key"></mu-icon>
+                        </mu-button>
+                    </div>
+                </div>
+                <div class="v_key" style="margin-top: 10px;">
+                    <div style="display: flex;justify-content: space-between;align-items: center;">
+                        <span style="font-size:22px;letter-spacing: 1px;" v-text="account.name"></span>
+                        <mu-button icon color="info" @click="doCopy">
+                            <mu-icon value="filter_none"></mu-icon>
+                        </mu-button>
+                    </div>
+                </div>
+            </div>
+        </mu-card>
+        <mu-card style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
+            <div class="meun">
+                <div>
+                    <mu-icon color="#7f7f7f" value="memory"></mu-icon>
+                    <span>资源</span>
+                </div>
+                <div>
+                    <mu-icon color="#7f7f7f" value="repeat"></mu-icon>
+                    <span>转账</span>
+                </div>
+                <div>
+                    <mu-icon color="#7f7f7f" value="repeat"></mu-icon>
+                    <span>转账记录</span>
+                </div>
+            </div>
+        </mu-card>
+        <!-- <mu-card
                 v-if="configList[account.netId] != undefined"
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="账户详情"></mu-card-title>
@@ -34,7 +71,7 @@
                     </mu-list-item-action>
                 </mu-list-item>
             </mu-list>
-        </mu-card>
+        </mu-card> -->
         <mu-card
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="代币资产" sub-title=""></mu-card-title>
@@ -290,6 +327,36 @@
 </script>
 
 <style scoped>
+.meun{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.meun div{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 10px;
+}
+.meun div:first-child{
+    border-right:1px solid #ccc;
+}
+.meun div:last-child{
+    border-left:1px solid #ccc;
+    position: relative;
+}
+.Card_header{
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: left;
+    position: relative;
+    background-color: #2b2b2b;
+    border-radius: 8px;
+}
+.v_key .material-icons{
+    font-size:20px;
+}
     .token-item {
         /*margin-bottom: 10px;*/
         padding: 3px 4px 3px 16px;
