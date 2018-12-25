@@ -1,10 +1,15 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
+        <div v-if="accountList.length == 0" style="text-align: center;margin-top: 50px;">
+            <h3 style="font-size: 25px;margin: 0;">欢迎</h3>
+            <h3 style="margin: 0;" v-text="`使用${title}`"></h3>
+            <p style="margin: 50px 0 10px 0;">您可以：</p>
+        </div>
         <mu-paper class="account-item" :z-depth="3" style="padding: 12px;" v-if="accountList.length == 0"
                   @click="addClick">
             <div class="account-item-center">
                 <div class="account-item-center-center" style="justify-content: center;">
-                    <span style="font-size: 18px;">没有账户，点我导入</span>
+                    <span style="font-size: 18px;">导入账户</span>
                 </div>
             </div>
         </mu-paper>
@@ -12,7 +17,7 @@
                   @click="createClick">
             <div class="account-item-center">
                 <div class="account-item-center-center" style="justify-content: center;">
-                    <span style="font-size: 18px;">或者点我创建一个</span>
+                    <span style="font-size: 18px;">创建账户</span>
                 </div>
             </div>
         </mu-paper>
@@ -81,6 +86,7 @@
         name: 'AccountList',
         data() {
             return {
+                title:title,
                 configList: configList,
                 accountList: this.$parent.accountList,
                 openAlert: false,
