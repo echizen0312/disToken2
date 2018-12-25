@@ -58,6 +58,11 @@
                 canOTC: canOTC
             }
         },
+        mounted() {
+            // let self = this
+            // 将要给原生调用的方法挂载到 window 上面
+            // window.test = self.test
+        },
         created() {
             let self = this
             if (self.pullAccounts()) {
@@ -525,7 +530,11 @@
             },
             //======================== test ========================
             test() {
-                this.saveAccounts('asdfasdf')
+                // alert(window.android_client.ffTest)
+                // if (window.android_client != undefined) {
+                //     alert('in')
+                //     window.android_client.ffTest('asdf')
+                // }
             }
         }
     }
