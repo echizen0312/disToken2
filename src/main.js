@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 
 import 'material-design-icons/iconfont/material-icons.css'
+import 'font-awesome/css/font-awesome.min.css'
 import MuseUI from 'muse-ui'
 import 'muse-ui/dist/muse-ui.css'
 import Message from 'muse-ui-message'

@@ -1,6 +1,6 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
-        <mu-card v-if="configList[account.netId] != undefined" class="Card_header">
+        <!-- <mu-card v-if="configList[account.netId] != undefined" class="Card_header">
             <div style="color: #fff;padding: 20px 30px;">
                 <div>
                     <div class="v_key">
@@ -36,8 +36,8 @@
                     <span>转账记录</span>
                 </div>
             </div>
-        </mu-card>
-        <!-- <mu-card
+        </mu-card> -->
+        <mu-card
                 v-if="configList[account.netId] != undefined"
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="账户详情"></mu-card-title>
@@ -71,7 +71,7 @@
                     </mu-list-item-action>
                 </mu-list-item>
             </mu-list>
-        </mu-card> -->
+        </mu-card>
         <mu-card
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="代币资产" sub-title=""></mu-card-title>
