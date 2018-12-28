@@ -1,11 +1,27 @@
 <template>
     <div class="hello" style="width: 100%; padding: 15px; max-width: 600px; margin: 0 auto; text-align: center;">
-        <div v-if="!isOver">
-            <h1>出示二维码</h1>
-            <!--<el-button @click="getKeys">点我</el-button>-->
-            <qrcode-vue v-if="value != ''" :value="value" size="240" level="M" foreground="#212121"
-                        style="margin-top: 50px;"></qrcode-vue>
-        </div>
+        <mu-paper v-if="!isOver" :z-depth="3">
+            <div v-if="configObj != null" class="account-info" :z-depth="3"
+                 :style="{backgroundColor: configObj.netColor}">
+                <div class="account-info-row" style="height: 42px;">
+                    <div style="flex: 1; font-size: 30px; font-weight: 500; letter-spacing: 4px;">{{ account.name }}
+                    </div>
+                    <!--<div style="width: 48px; height: 48px; display: flex; justify-content: center; align-items: center;">-->
+                    <!--<mu-button icon small @click="doCopy">-->
+                    <!--<mu-icon value="filter_none"></mu-icon>-->
+                    <!--</mu-button>-->
+                    <!--</div>-->
+                </div>
+                <div class="account-info-row" style="height: 32px;">
+                    <div style="flex: 1; font-size: 14px; font-weight: 400; letter-spacing: 2px;">
+                        所在链 <span style="font-size: 14px;">{{configObj.netName}}</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding-top: 30px; padding-bottom: 40px;">
+                <qrcode-vue v-if="value != ''" :value="value" size="240" level="L" foreground="#212121"></qrcode-vue>
+            </div>
+        </mu-paper>
         <mu-card
                 v-else
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
@@ -44,6 +60,7 @@
 <script>
     /* eslint-disable no-undef */
     import QrcodeVue from 'qrcode.vue'
+
     let CryptoJS = require("crypto-js")
 
     export default {
@@ -182,6 +199,14 @@
                     })
                 }
             },
+            doCopy() {
+                let self = this
+                self.$copyText(self.account.name).then(function () {
+                    self.$alert('复制成功', '提示', {type: 'success'})
+                }, function () {
+                    self.$alert('复制失败', '提示', {type: 'error'})
+                })
+            },
             goBack() {
                 let self = this
                 if (self.T != null) {
@@ -197,7 +222,22 @@
 </script>
 
 <style scoped>
-    h1, h2 {
-        font-weight: normal;
+    .account-info {
+        margin-top: 8px;
+        margin-bottom: 16px;
+        padding: 8px 8px 8px 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        position: relative;
+        color: white;
+    }
+
+    .account-info-row {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
     }
 </style>

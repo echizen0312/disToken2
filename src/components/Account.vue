@@ -1,7 +1,7 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
-        <mu-paper v-if="configList[account.netId] != undefined" class="account-info" :z-depth="3"
-                  :style="{backgroundColor: configList[account.netId].netColor}">
+        <mu-paper v-if="configObj != null" class="account-info" :z-depth="3"
+                  :style="{backgroundColor: configObj.netColor}">
             <div class="account-info-row">
                 <div style="flex: 1; font-size: 32px; font-weight: 500; letter-spacing: 4px;">{{ account.name }}</div>
                 <div style="width: 48px; height: 48px; display: flex; justify-content: center; align-items: center;">
@@ -12,7 +12,7 @@
             </div>
             <div class="account-info-row">
                 <div style="flex: 1; font-size: 16px; font-weight: 400; letter-spacing: 2px;">
-                    所在链 <span style="font-size: 20px;">{{configList[account.netId].netName}}</span>
+                    所在链 <span style="font-size: 20px;">{{configObj.netName}}</span>
                 </div>
                 <div style="width: 48px; height: 48px; display: flex; justify-content: center; align-items: center;">
                     <mu-button icon small @click="doExport">
