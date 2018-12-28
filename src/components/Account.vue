@@ -93,8 +93,9 @@
                         <!--<mu-button icon color="error" @click="goTransfer(token)">-->
                         <!--<mu-icon value="swap_horiz"></mu-icon>-->
                         <!--</mu-button>-->
-                        <div v-if="$parent.canOTC" class="otc-button" @click="goOTC">购买</div>
-                        <div v-else class="otc-button" @click="goTransfer(token)">转账</div>
+                        <!--<div v-if="$parent.canOTC" class="otc-button" @click="goOTC">购买</div>-->
+                        <!--<div v-else class="otc-button" @click="goTransfer(token)">转账</div>-->
+                        <div class="otc-button" @click="goTransfer(token)">转账</div>
                     </div>
                 </div>
                 <mu-divider inset :key="'d_' + index"></mu-divider>

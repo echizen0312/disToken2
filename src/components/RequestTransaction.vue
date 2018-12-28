@@ -7,14 +7,27 @@
             <div style="padding: 10px 18px 18px 18px;" v-if="account != null">
                 <mu-text-field v-model="configObj.netName" label="目标链" readonly full-width></mu-text-field>
                 <mu-text-field v-model="account.name" label="签名账户" readonly full-width></mu-text-field>
-                <mu-text-field v-model="JSON.stringify(tr, null, 4)" label="交易体" readonly multi-line :rows="6"
-                               full-width></mu-text-field>
+                <!--<mu-text-field v-model="JSON.stringify(tr, null, 4)" label="交易体" readonly multi-line :rows="6"-->
+                <!--full-width></mu-text-field>-->
+                <mu-flex justify-content="center" align-items="center" style="margin-bottom: 35px;">
+                    <mu-button full-width color="blueGrey300" @click="open = true">点击显示交易体</mu-button>
+                </mu-flex>
                 <div style="display: flex; justify-content: space-between;">
                     <mu-button color="primary" @click="back">返回</mu-button>
-                    <mu-button color="error" @click="submit">确定</mu-button>
+                    <mu-button color="success" @click="submit">确定</mu-button>
                 </div>
             </div>
         </mu-card>
+        <mu-bottom-sheet :open.sync="open">
+            <div style="padding: 10px 18px 18px 18px;" v-if="account != null">
+                <mu-text-field v-model="JSON.stringify(tr, null, 4)" label="交易体" readonly multi-line :rows="14"
+                               full-width></mu-text-field>
+                <div style="display: flex; justify-content: space-between;">
+                    <mu-button color="blueGrey300" @click="open = false">隐藏</mu-button>
+                    <mu-button color="success" @click="submit">确定交易</mu-button>
+                </div>
+            </div>
+        </mu-bottom-sheet>
     </div>
 </template>
 
@@ -38,6 +51,7 @@
                     netId: '',
                     aesKey: ''
                 },
+                open: false
             }
         },
         created() {

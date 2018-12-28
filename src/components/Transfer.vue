@@ -28,7 +28,7 @@
                         <mu-button color="purple" @click="goChange" v-if="(symbol == 'NXT' || symbol == 'EOS') && configObj.canChange">
                             跨链转账
                         </mu-button>
-                        <mu-button color="error" @click="transferBalance">提交</mu-button>
+                        <mu-button color="success" @click="transferBalance">提交</mu-button>
                     </div>
                 </mu-form>
             </div>
@@ -59,7 +59,7 @@
                         <mu-text-field v-model="trx_id" readonly></mu-text-field>
                     </mu-form-item>
                     <div style="margin-bottom: 20px; display: flex; justify-content: space-between;">
-                        <mu-button color="success" @click="goBack">返回</mu-button>
+                        <mu-button color="" @click="goBack">返回</mu-button>
                         <mu-button color="primary" @click="goTracker">查看</mu-button>
                     </div>
                 </mu-form>
