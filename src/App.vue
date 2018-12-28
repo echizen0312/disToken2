@@ -544,4 +544,12 @@
     .mu-dialog {
         position: relative !important;
     }
+
+    .account-item-head {
+        width: 100%;
+        height: 5px;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
 </style>

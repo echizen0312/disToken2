@@ -187,14 +187,6 @@
         position: relative;
     }
 
-    .account-item-head {
-        width: 100%;
-        height: 5px;
-        position: absolute;
-        left: 0;
-        top: 0;
-    }
-
     .account-item-top {
         width: 100%;
         display: flex;

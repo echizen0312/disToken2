@@ -4,6 +4,7 @@
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="请求交易"></mu-card-title>
             <mu-divider></mu-divider>
+            <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
             <div style="padding: 10px 18px 18px 18px;" v-if="account != null">
                 <mu-text-field v-model="configObj.netName" label="目标链" readonly full-width></mu-text-field>
                 <mu-text-field v-model="account.name" label="签名账户" readonly full-width></mu-text-field>

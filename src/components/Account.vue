@@ -1,81 +1,31 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
-        <!-- <mu-card v-if="configList[account.netId] != undefined" class="Card_header">
-            <div style="color: #fff;padding: 20px 30px;">
-                <div>
-                    <div class="v_key">
-                        <span>所在链</span>
-                        <span style="padding-left:10px;" v-text="configList[account.netId].netName"></span>
-                        <mu-button style="vertical-align: middle;" icon color="info" @click="doExport">
-                            <mu-icon value="vpn_key"></mu-icon>
-                        </mu-button>
-                    </div>
-                </div>
-                <div class="v_key" style="margin-top: 10px;">
-                    <div style="display: flex;justify-content: space-between;align-items: center;">
-                        <span style="font-size:22px;letter-spacing: 1px;" v-text="account.name"></span>
-                        <mu-button icon color="info" @click="doCopy">
-                            <mu-icon value="filter_none"></mu-icon>
-                        </mu-button>
-                    </div>
+        <mu-paper v-if="configList[account.netId] != undefined" class="account-info" :z-depth="3"
+                  :style="{backgroundColor: configList[account.netId].netColor}">
+            <div class="account-info-row">
+                <div style="flex: 1; font-size: 32px; font-weight: 500; letter-spacing: 4px;">{{ account.name }}</div>
+                <div style="width: 48px; height: 48px; display: flex; justify-content: center; align-items: center;">
+                    <mu-button icon small @click="doCopy">
+                        <mu-icon value="filter_none"></mu-icon>
+                    </mu-button>
                 </div>
             </div>
-        </mu-card>
-        <mu-card style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
-            <div class="meun">
-                <div>
-                    <mu-icon color="#7f7f7f" value="memory"></mu-icon>
-                    <span>资源</span>
+            <div class="account-info-row">
+                <div style="flex: 1; font-size: 16px; font-weight: 400; letter-spacing: 2px;">
+                    所在链 <span style="font-size: 20px;">{{configList[account.netId].netName}}</span>
                 </div>
-                <div>
-                    <mu-icon color="#7f7f7f" value="repeat"></mu-icon>
-                    <span>转账</span>
-                </div>
-                <div>
-                    <mu-icon color="#7f7f7f" value="repeat"></mu-icon>
-                    <span>转账记录</span>
+                <div style="width: 48px; height: 48px; display: flex; justify-content: center; align-items: center;">
+                    <mu-button icon small @click="doExport">
+                        <mu-icon value="vpn_key"></mu-icon>
+                    </mu-button>
                 </div>
             </div>
-        </mu-card> -->
-        <mu-card
-                v-if="configList[account.netId] != undefined"
-                style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
-            <mu-card-title title="账户详情"></mu-card-title>
-            <mu-divider></mu-divider>
-            <mu-list>
-                <mu-list-item button :ripple="false">
-                    <mu-list-item-action>
-                        <mu-icon value="person"></mu-icon>
-                    </mu-list-item-action>
-                    <mu-list-item-title style="font-size: 22px; letter-spacing: 1px;">{{ account.name }}
-                    </mu-list-item-title>
-                    <mu-list-item-action style="flex-direction: row; align-items: center;">
-                        <mu-button icon color="info" @click="doCopy">
-                            <mu-icon value="filter_none"></mu-icon>
-                        </mu-button>
-                    </mu-list-item-action>
-                </mu-list-item>
-                <mu-list-item button :ripple="false">
-                    <mu-list-item-action>
-                        <div class="net-logo" :style="{backgroundColor: configList[account.netId].netColor}">{{
-                            configList[account.netId].netName[0] }}
-                        </div>
-                    </mu-list-item-action>
-                    <mu-list-item-title style="font-size: 20px; letter-spacing: 1px;">{{
-                        configList[account.netId].netName }}
-                    </mu-list-item-title>
-                    <mu-list-item-action style="flex-direction: row; align-items: center;">
-                        <mu-button icon color="info" @click="doExport">
-                            <mu-icon value="vpn_key"></mu-icon>
-                        </mu-button>
-                    </mu-list-item-action>
-                </mu-list-item>
-            </mu-list>
-        </mu-card>
+        </mu-paper>
         <mu-card
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="代币资产" sub-title=""></mu-card-title>
             <mu-divider></mu-divider>
+            <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
             <template v-for="(token, index) in tokenList">
                 <div class="token-item" :key="token.symbol + index">
                     <!--<div class="left">-->
@@ -102,7 +52,7 @@
             </template>
         </mu-card>
         <mu-card
-                style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
+                style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;" v-show="false">
             <mu-card-title title="账户资源" sub-title=""></mu-card-title>
             <mu-divider></mu-divider>
             <mu-list>
@@ -148,6 +98,7 @@
         data() {
             return {
                 configList: configList,
+                configObj: null,
                 netId: '',
                 id: null,
                 account: {
@@ -198,6 +149,7 @@
                 }
             }
             if (self.account != null && self.configList[self.account.netId] != undefined) {
+                self.configObj = self.configList[self.account.netId]
                 let configObj = self.configList[self.account.netId]
                 if (configObj == undefined) {
                     self.$router.replace('/AccountList')
@@ -328,36 +280,25 @@
 </script>
 
 <style scoped>
-.meun{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-.meun div{
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 10px;
-}
-.meun div:first-child{
-    border-right:1px solid #ccc;
-}
-.meun div:last-child{
-    border-left:1px solid #ccc;
-    position: relative;
-}
-.Card_header{
-    width: 100%;
-    margin-bottom: 10px;
-    text-align: left;
-    position: relative;
-    background-color: #2b2b2b;
-    border-radius: 8px;
-}
-.v_key .material-icons{
-    font-size:20px;
-}
+    .account-info {
+        margin-top: 8px;
+        margin-bottom: 16px;
+        padding: 8px 8px 8px 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        position: relative;
+        color: white;
+    }
+
+    .account-info-row {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
     .token-item {
         /*margin-bottom: 10px;*/
         padding: 3px 4px 3px 16px;

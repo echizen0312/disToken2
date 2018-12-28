@@ -5,6 +5,7 @@
                  style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="主链转到NatureToken"></mu-card-title>
             <mu-divider></mu-divider>
+            <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
             <div style="padding: 10px 15px 5px 15px; ">
                 <mu-form :model="form" label-position="top" style="">
                     <mu-form-item label="代币">
@@ -33,6 +34,7 @@
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="NatureToken转到主链"></mu-card-title>
             <mu-divider></mu-divider>
+            <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
             <div style="padding: 10px 15px 5px 15px; ">
                 <mu-form :model="form" label-position="top" style="">
                     <mu-form-item label="代币">

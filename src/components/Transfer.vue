@@ -5,6 +5,7 @@
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="代币转账"></mu-card-title>
             <mu-divider></mu-divider>
+            <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
             <div style="padding: 10px 15px 5px 15px; ">
                 <mu-form :model="form" label-position="top" style="">
                     <mu-form-item label="代币">
@@ -25,7 +26,8 @@
                     </mu-form-item>
                     <div style="margin-bottom: 20px; display: flex; justify-content: space-between;">
                         <mu-button color="primary" @click="goTransferList">转账记录</mu-button>
-                        <mu-button color="purple" @click="goChange" v-if="(symbol == 'NXT' || symbol == 'EOS') && configObj.canChange">
+                        <mu-button color="purple" @click="goChange"
+                                   v-if="(symbol == 'NXT' || symbol == 'EOS') && configObj.canChange">
                             跨链转账
                         </mu-button>
                         <mu-button color="success" @click="transferBalance">提交</mu-button>
@@ -38,6 +40,7 @@
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="转账成功"></mu-card-title>
             <mu-divider></mu-divider>
+            <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
             <div style="padding: 10px 15px 5px 15px; ">
                 <mu-form :model="form" label-position="top" style="">
                     <mu-form-item label="代币">

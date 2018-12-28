@@ -1,18 +1,19 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
         <!--<mu-button fab color="red" style="position: fixed; bottom: 75px; right: 20px; z-index: 999;"-->
-                   <!--@click="goTransfer">-->
-            <!--<mu-icon value="swap_horiz"></mu-icon>-->
+        <!--@click="goTransfer">-->
+        <!--<mu-icon value="swap_horiz"></mu-icon>-->
         <!--</mu-button>-->
         <!--<mu-button v-if="symbol == 'NXT' && configObj.canChange" fab color="purple"-->
-                   <!--style="position: fixed; bottom: 75px; left: 20px; z-index: 999;"-->
-                   <!--@click="goChange">-->
-            <!--<mu-icon value="cached"></mu-icon>-->
+        <!--style="position: fixed; bottom: 75px; left: 20px; z-index: 999;"-->
+        <!--@click="goChange">-->
+        <!--<mu-icon value="cached"></mu-icon>-->
         <!--</mu-button>-->
         <mu-card
                 style="width: 100%; margin-bottom: 80px; text-align: left; position: relative;">
             <mu-card-title :title="symbol + ' 转账记录（近10条）'"></mu-card-title>
             <mu-divider></mu-divider>
+            <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
             <div style="padding: 10px 15px 5px 15px; ">
                 <mu-tabs :value.sync="active1" inverse color="secondary" text-color="rgba(0, 0, 0, .54)" full-width
                          @change="change">
