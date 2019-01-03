@@ -217,6 +217,24 @@
                     self.$alert('交易密码错误', '提示', {type: 'error'})
                 })
             },
+            doExportNew(acc, callback) {
+                let self = this
+                self.$prompt('请输入交易密码', '导出私钥', {inputType: 'password'}).then(data => {
+                    if (data.result && data.value != undefined && data.value != '') {
+                        let bytes = CryptoJS.AES.decrypt(acc.key, data.value)
+                        let plaintext = bytes.toString(CryptoJS.enc.Utf8)
+                        // console.log(plaintext)
+                        if (plaintext != '') {
+                            callback({success: true, msg: '成功导出私钥', result: plaintext})
+                        } else {
+                            callback({success: false, msg: '交易密码错误', result: false})
+                        }
+                    }
+                }).catch(e => {
+                    console.log(e)
+                    callback({success: false, msg: '交易密码错误', result: false})
+                })
+            },
             getAccount(id, acc, callback) {
                 let self = this
                 if (self.configList[id] != undefined) {

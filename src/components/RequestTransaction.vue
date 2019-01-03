@@ -19,7 +19,7 @@
                 </div>
             </div>
         </mu-card>
-        <mu-bottom-sheet :open.sync="open">
+        <mu-bottom-sheet :open.sync="open" :overlay-close="false">
             <div style="padding: 10px 18px 18px 18px;" v-if="account != null">
                 <mu-text-field v-model="JSON.stringify(tr, null, 4)" label="交易体" readonly multi-line :rows="14"
                                full-width></mu-text-field>

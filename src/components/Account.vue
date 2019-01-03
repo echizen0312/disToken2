@@ -87,6 +87,16 @@
                 </mu-list-item>
             </mu-list>
         </mu-card>
+        <mu-bottom-sheet :open.sync="open" :overlay-close="false">
+            <div style="padding: 10px 18px 18px 18px;">
+                <mu-text-field v-model="pk" label="私钥请妥善保管" readonly multi-line :rows="8"
+                               full-width></mu-text-field>
+                <div style="display: flex; justify-content: space-between;">
+                    <mu-button color="blueGrey300" @click="doClose">关闭</mu-button>
+                    <mu-button color="success" @click="doCopyPK">复制</mu-button>
+                </div>
+            </div>
+        </mu-bottom-sheet>
     </div>
 </template>
 
@@ -106,7 +116,6 @@
                     name: '',
                     netId: '',
                     key: '',
-
                 },
                 info: {
                     ram: {
@@ -125,11 +134,9 @@
                     }
                 },
                 tokenList: [],
-                pluginTokenUrl: {
-                    url: '',
-                    isLoaded: false
-                },
-                canQRPay: false
+                canQRPay: false,
+                open: false,
+                pk: ''
             }
         },
         watch: {
@@ -142,6 +149,7 @@
             let self = this
             self.id = self.$route.params.id
             self.account = null
+            self.pk = ''
             let tmp = self.$parent.accountList
             for (let i in tmp) {
                 if (tmp[i].id == self.id) {
@@ -259,9 +267,30 @@
                     self.$alert('复制失败', '提示', {type: 'error'})
                 })
             },
+            doCopyPK() {
+                let self = this
+                self.$copyText(self.pk).then(function () {
+                    self.$alert('复制成功', '提示', {type: 'success'})
+                }, function () {
+                    self.$alert('复制失败', '提示', {type: 'error'})
+                })
+            },
             doExport() {
                 let self = this
-                self.$parent.doExport(self.account)
+                // self.$parent.doExport(self.account)
+                self.$parent.doExportNew(self.account, function (r) {
+                    if (r.success) {
+                        self.pk = r.result
+                        self.open = true
+                    } else {
+                        self.$alert(r.msg, '提示', {type: 'error'})
+                    }
+                })
+            },
+            doClose() {
+                let self = this
+                self.pk = ''
+                self.open = false
             },
             goTransfer(token) {
                 this.$router.push('/Transfer/' + this.id + '/' + token.code + '/' + token.symbol)
