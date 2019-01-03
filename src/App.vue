@@ -68,11 +68,19 @@
             if (self.pullAccounts()) {
                 console.log('拉取APP数据')
             } else {
-                let hasAccs = self.$cookies.isKey('disToken2Accounts')
+                let storage = window.localStorage
+                let hasAccs = storage.hasOwnProperty('disToken2Accounts')
+                let hasAccsOld = self.$cookies.isKey('disToken2Accounts')
                 if (hasAccs) {
+                    let oldTmp = storage['disToken2Accounts']
+                    let tmp = JSON.parse(oldTmp)
+                    for (let i in tmp) {
+                        self.accountList.push(tmp[i])
+                    }
+                } else if (hasAccsOld) {
                     let oldTmp = self.$cookies.get('disToken2Accounts')
-                    self.$cookies.set('disToken2Accounts', JSON.stringify([]))
-                    self.$cookies.set('disToken2Accounts', oldTmp, '15d')
+                    self.$cookies.remove('disToken2Accounts')
+                    storage['disToken2Accounts'] = oldTmp
                     let tmp = JSON.parse(oldTmp)
                     for (let i in tmp) {
                         self.accountList.push(tmp[i])
@@ -526,6 +534,8 @@
             scanQRCode() {
                 if (window.android_client != undefined) {
                     window.android_client.scanQRCode()
+                } else {
+                    this.$alert('网页版无法使用扫码', '提示', {type: 'error'})
                 }
             },
             //======================== test ========================

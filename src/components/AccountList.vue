@@ -127,9 +127,11 @@
                                 key: aesR
                             }
                             self.$parent.accountList.push(acc)
-                            self.$cookies.set('disToken2Accounts', JSON.stringify(self.$parent.accountList), '15d')
+                            // self.$cookies.set('disToken2Accounts', JSON.stringify(self.$parent.accountList), '15d')
                             let obj = JSON.stringify(self.$parent.accountList)
                             self.$parent.saveAccounts(obj)
+                            let storage = window.localStorage
+                            storage['disToken2Accounts'] = obj
                             self.closeAlertDialog()
                             self.$alert('导入成功', '提示', {type: 'success'})
                         } else {
@@ -156,9 +158,11 @@
                         self.$parent.accountList.splice(i, 1)
                     }
                 }
-                self.$cookies.set('disToken2Accounts', JSON.stringify(self.$parent.accountList))
+                // self.$cookies.set('disToken2Accounts', JSON.stringify(self.$parent.accountList))
                 let obj = JSON.stringify(self.$parent.accountList)
                 self.$parent.saveAccounts(obj)
+                let storage = window.localStorage
+                storage['disToken2Accounts'] = obj
             },
             // removeAccountAll() {
             //     let self = this
