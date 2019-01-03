@@ -452,7 +452,11 @@
                                         contract.transfer(from, to, quantity, memo).then(result => {
                                             // console.log(result)
                                             loading.close()
-                                            callback({success: true, msg: '转账成功', result: result})
+                                            if (result.processed != undefined && result.transaction_id != undefined) {
+                                                callback({success: true, msg: '转账成功', result: result})
+                                            } else {
+                                                callback({success: false, msg: '转账失败', result: result.error})
+                                            }
                                         }).catch(error => {
                                             // console.log(error)
                                             loading.close()
