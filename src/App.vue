@@ -4,7 +4,10 @@
             <mu-button icon slot="left" v-show="back" @click="goBack">
                 <mu-icon value="chevron_left"></mu-icon>
             </mu-button>
-            <mu-button icon slot="left" v-show="!back">
+            <mu-button icon slot="left" v-show="list" @click="goList">
+                <mu-icon value="menu"></mu-icon>
+            </mu-button>
+            <mu-button icon slot="left" v-show="!back && !list">
                 <mu-icon value=""></mu-icon>
             </mu-button>
             <span @click="test">{{ title }}</span>
@@ -51,6 +54,7 @@
                 path: '1',
                 title: title,
                 back: false,
+                list: false,
                 add: false,
                 qr: false,
                 scan: false,
@@ -67,15 +71,25 @@
             let self = this
             if (self.pullAccounts()) {
                 console.log('拉取APP数据')
+                let storage = window.localStorage
+                if (storage.hasOwnProperty('disToken2Last')) {
+                    let lastTmp = storage['disToken2Last']
+                    self.$router.replace('/Account/' + lastTmp)
+                }
             } else {
                 let storage = window.localStorage
                 let hasAccs = storage.hasOwnProperty('disToken2Accounts')
+                let hasLast = storage.hasOwnProperty('disToken2Last')
                 let hasAccsOld = self.$cookies.isKey('disToken2Accounts')
                 if (hasAccs) {
                     let oldTmp = storage['disToken2Accounts']
                     let tmp = JSON.parse(oldTmp)
                     for (let i in tmp) {
                         self.accountList.push(tmp[i])
+                    }
+                    if (hasLast) {
+                        let lastTmp = storage['disToken2Last']
+                        self.$router.push('/Account/' + lastTmp)
                     }
                 } else if (hasAccsOld) {
                     let oldTmp = self.$cookies.get('disToken2Accounts')
@@ -114,13 +128,20 @@
                 let self = this
                 self.path = value
                 if (value == '1') {
-                    self.$router.replace('/AccountList')
+                    let storage = window.localStorage
+                    if (storage.hasOwnProperty('disToken2Last')) {
+                        let lastTmp = storage['disToken2Last']
+                        self.$router.replace('/Account/' + lastTmp)
+                    } else {
+                        self.$router.replace('/AccountList')
+                    }
                 }
                 if (value == '2') {
                     self.$router.replace('/GameList')
                 }
                 if (value == '3') {
                     location.href = 'http://c2c.naturetoken.io/'
+                    // self.$router.replace('/Web/0/3')
                 }
                 if (value == '9') {
                     self.$router.replace('/CreateAccount')
@@ -130,6 +151,7 @@
                 let self = this
                 // self.title = data.title
                 self.back = data.back
+                self.list = data.list == undefined ? false : data.list
                 self.add = data.add
                 self.qr = data.qr
                 self.scan = data.scan
@@ -137,6 +159,9 @@
             },
             goBack() {
                 this.$router.go(-1)
+            },
+            goList() {
+                this.$router.replace('/AccountList')
             },
             goAdd() {
                 let self = this
@@ -567,6 +592,7 @@
                 //     alert('in')
                 //     window.android_client.ffTest('asdf')
                 // }
+                // this.$router.replace('/Web/0/4')
             }
         }
     }

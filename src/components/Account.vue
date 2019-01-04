@@ -162,10 +162,19 @@
                 if (configObj == undefined) {
                     self.$router.replace('/AccountList')
                 } else {
+                    let storage = window.localStorage
+                    storage['disToken2Last'] = self.id
                     self.netId = configObj.netId
                     self.tokenList = configObj.tokenList
                     self.canQRPay = configObj.canQRPay
-                    self.$emit('setTop', {back: true, add: false, qr: self.canQRPay, scan: false, path: '1'})
+                    self.$emit('setTop', {
+                        back: false,
+                        list: true,
+                        add: false,
+                        qr: self.canQRPay,
+                        scan: false,
+                        path: '1'
+                    })
                     self.getAccount()
                     self.getBalancese()
                 }

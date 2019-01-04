@@ -170,7 +170,7 @@
             // },
             accountClick(acc) {
                 let self = this
-                self.$router.push('/Account/' + acc.id)
+                self.$router.replace('/Account/' + acc.id)
             },
             createClick() {
                 let self = this
