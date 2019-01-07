@@ -21,36 +21,38 @@
                 </div>
             </div>
         </mu-paper>
-        <mu-card
-                style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
-            <mu-card-title title="代币资产" sub-title=""></mu-card-title>
-            <mu-divider></mu-divider>
-            <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
-            <template v-for="(token, index) in tokenList">
-                <div class="token-item" :key="token.symbol + index">
-                    <!--<div class="left">-->
-                    <!--<mu-icon value="style"></mu-icon>-->
-                    <!--</div>-->
-                    <div class="center" @click="goTransfer(token)">
-                        <div style="width: auto; display: flex; flex-direction: column;">
-                            <div style="font-size: 18px; color: #263238;">{{token.symbol}}</div>
-                            <div style="font-size: 12px;">{{token.code}}</div>
+        <mu-load-more @refresh="refresh" :refreshing="refreshing" :loading="false">
+            <mu-card
+                    style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
+                <mu-card-title title="代币资产" sub-title=""></mu-card-title>
+                <mu-divider></mu-divider>
+                <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
+                <template v-for="(token, index) in tokenList">
+                    <div class="token-item" :key="token.symbol + index">
+                        <!--<div class="left">-->
+                        <!--<mu-icon value="style"></mu-icon>-->
+                        <!--</div>-->
+                        <div class="center" @click="goTransfer(token)">
+                            <div style="width: auto; display: flex; flex-direction: column;">
+                                <div style="font-size: 18px; color: #263238;">{{token.symbol}}</div>
+                                <div style="font-size: 12px;">{{token.code}}</div>
+                            </div>
+                            <div style="flex: 1; text-align: right; font-size: 21px; color: #263238;">{{token.balance}}
+                            </div>
                         </div>
-                        <div style="flex: 1; text-align: right; font-size: 21px; color: #263238;">{{token.balance}}
+                        <div class="right">
+                            <!--<mu-button icon color="error" @click="goTransfer(token)">-->
+                            <!--<mu-icon value="swap_horiz"></mu-icon>-->
+                            <!--</mu-button>-->
+                            <!--<div v-if="$parent.canOTC" class="otc-button" @click="goOTC">购买</div>-->
+                            <!--<div v-else class="otc-button" @click="goTransfer(token)">转账</div>-->
+                            <div class="otc-button" @click="goTransfer(token)">转账</div>
                         </div>
                     </div>
-                    <div class="right">
-                        <!--<mu-button icon color="error" @click="goTransfer(token)">-->
-                        <!--<mu-icon value="swap_horiz"></mu-icon>-->
-                        <!--</mu-button>-->
-                        <!--<div v-if="$parent.canOTC" class="otc-button" @click="goOTC">购买</div>-->
-                        <!--<div v-else class="otc-button" @click="goTransfer(token)">转账</div>-->
-                        <div class="otc-button" @click="goTransfer(token)">转账</div>
-                    </div>
-                </div>
-                <mu-divider inset :key="'d_' + index"></mu-divider>
-            </template>
-        </mu-card>
+                    <mu-divider inset :key="'d_' + index"></mu-divider>
+                </template>
+            </mu-card>
+        </mu-load-more>
         <mu-card
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;" v-show="false">
             <mu-card-title title="账户资源" sub-title=""></mu-card-title>
@@ -136,7 +138,8 @@
                 tokenList: [],
                 canQRPay: false,
                 open: false,
-                pk: ''
+                pk: '',
+                refreshing: false
             }
         },
         watch: {
@@ -264,9 +267,17 @@
             },
             getBalancese() {
                 let self = this
+                self.refreshing = true
                 self.$parent.getBalancese(self.netId, self.tokenList, self.account, function () {
                     // console.log(r)
+                    setTimeout(() => {
+                        self.refreshing = false
+                    }, 500)
                 })
+            },
+            refresh() {
+                let self = this
+                self.getBalancese()
             },
             doCopy() {
                 let self = this
