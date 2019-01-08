@@ -9,6 +9,7 @@ import Change from './components/Change.vue'
 import QrCode from './components/QrCode.vue'
 import GameList from './components/GameList.vue'
 import RequestTransaction from './components/RequestTransaction.vue'
+import RequestTransfer from './components/RequestTransfer.vue'
 import Web from './components/Web.vue'
 
 Vue.use(Router)
@@ -25,6 +26,11 @@ export default new Router({
         {path: '/QrCode/:id', name: 'QrCode', component: QrCode},
         {path: '/GameList', name: 'GameList', component: GameList},
         {path: '/RequestTransaction/:netId/:accName/:tr', name: 'RequestTransaction', component: RequestTransaction},
+        {
+            path: '/RequestTransfer/:netId/:code/:symbol/:to/:number/:memo',
+            name: 'RequestTransfer',
+            component: RequestTransfer
+        },
         {path: '/Web/:id/:path', name: 'Web', component: Web},
     ]
 })

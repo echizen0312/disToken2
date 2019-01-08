@@ -1,4 +1,4 @@
-// NXT_03
+// NXT_04
 export default {
     NXT_GetAccount: function () {
         let path = location.href
@@ -25,6 +25,16 @@ export default {
             let isTest = false
             let address = isTest ? 'http://10.255.1.25:8080/disToken' : 'https://w.naturetoken.io/nxt_w'
             let url = `${address}/#/RequestTransaction/${account.netId}/${account.name}/${JSON.stringify(tr)}`
+            location.href = url
+        } else {
+            return false
+        }
+    },
+    NXT_RequestTransfer: function (code, symbol, to, number, memo) {
+        if (code != undefined && symbol != undefined && to != undefined && number != undefined && memo != undefined) {
+            let isTest = false
+            let address = isTest ? 'http://10.255.1.25:8080/disToken' : 'https://w.naturetoken.io/nxt_w'
+            let url = `${address}/#/RequestTransfer/002/${code}/${symbol}/${to}/${number}/${memo}`
             location.href = url
         } else {
             return false

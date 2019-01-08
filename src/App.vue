@@ -72,7 +72,7 @@
             if (self.pullAccounts()) {
                 console.log('拉取APP数据')
                 let storage = window.localStorage
-                if (storage.hasOwnProperty('disToken2Last')) {
+                if (storage.hasOwnProperty('disToken2Last') && (self.$route.name == 'Home' || self.$route.name == 'AccountList')) {
                     let lastTmp = storage['disToken2Last']
                     self.$router.replace('/Account/' + lastTmp)
                 }
@@ -87,9 +87,9 @@
                     for (let i in tmp) {
                         self.accountList.push(tmp[i])
                     }
-                    if (hasLast) {
+                    if (hasLast && (self.$route.name == 'Home' || self.$route.name == 'AccountList')) {
                         let lastTmp = storage['disToken2Last']
-                        self.$router.push('/Account/' + lastTmp)
+                        self.$router.replace('/Account/' + lastTmp)
                     }
                 } else if (hasAccsOld) {
                     let oldTmp = self.$cookies.get('disToken2Accounts')
