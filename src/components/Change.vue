@@ -1,7 +1,7 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
         <!--<mu-card v-if="!isOver && configObj.eosAddress == 'http://39.105.44.204:8888' && symbol == 'NXT'" style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">-->
-        <mu-card v-if="!isOver && configObj.netId == '999' && (symbol == 'NXT' || symbol == 'EOS')"
+        <mu-card v-if="!isOver && configObj.netId == '999' && (symbol == 'NXT' || symbol == 'EOS' || symbol == 'THK')"
                  style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="主链转到NatureToken"></mu-card-title>
             <mu-divider></mu-divider>
@@ -30,7 +30,7 @@
             </div>
         </mu-card>
         <mu-card
-                v-if="!isOver && configObj.netId == '002' && (symbol == 'NXT' || symbol == 'EOS')"
+                v-if="!isOver && configObj.netId == '002' && (symbol == 'NXT' || symbol == 'EOS' || symbol == 'THK')"
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="NatureToken转到主链"></mu-card-title>
             <mu-divider></mu-divider>

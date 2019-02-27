@@ -1,5 +1,10 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
+        <mu-button v-if="!$parent.isAPP && $parent.canDLD" fab color="red"
+                   style="position: fixed; bottom: 75px; right: 20px; z-index: 999;"
+                   @click="goDownload">
+            <mu-icon value="cloud_download"></mu-icon>
+        </mu-button>
         <mu-paper v-if="configObj != null" class="account-info" :z-depth="3"
                   :style="{backgroundColor: configObj.netColor}">
             <div class="account-info-row">
@@ -324,6 +329,9 @@
             goOTC() {
                 location.href = 'http://c2c.naturetoken.io/'
             },
+            goDownload() {
+                this.$router.push('/Download')
+            }
         }
     }
 </script>

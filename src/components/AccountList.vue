@@ -1,5 +1,10 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
+        <mu-button v-if="!$parent.isAPP && $parent.canDLD" fab color="red"
+                   style="position: fixed; bottom: 75px; right: 20px; z-index: 999;"
+                   @click="goDownload">
+            <mu-icon value="cloud_download"></mu-icon>
+        </mu-button>
         <template v-if="accountList.length == 0">
             <div style="text-align: center;margin-top: 30px;">
                 <div style="font-size: 25px; margin: 0;">欢迎</div>
@@ -175,6 +180,9 @@
             createClick() {
                 let self = this
                 self.$router.push('/CreateAccount')
+            },
+            goDownload() {
+                this.$router.push('/Download')
             }
         }
     }

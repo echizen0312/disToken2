@@ -11,6 +11,7 @@ import GameList from './components/GameList.vue'
 import RequestTransaction from './components/RequestTransaction.vue'
 import RequestTransfer from './components/RequestTransfer.vue'
 import Web from './components/Web.vue'
+import Download from './components/Download.vue'
 
 Vue.use(Router)
 
@@ -32,5 +33,6 @@ export default new Router({
             component: RequestTransfer
         },
         {path: '/Web/:id/:path', name: 'Web', component: Web},
+        {path: '/Download', name: 'Download', component: Download},
     ]
 })

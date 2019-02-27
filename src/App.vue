@@ -59,7 +59,9 @@
                 qr: false,
                 scan: false,
                 canGame: canGame,
-                canOTC: canOTC
+                canOTC: canOTC,
+                canDLD: canDLD,
+                isAPP: false
             }
         },
         mounted() {
@@ -70,6 +72,7 @@
         created() {
             let self = this
             if (self.pullAccounts()) {
+                self.isAPP = true
                 console.log('拉取APP数据')
                 let storage = window.localStorage
                 if (storage.hasOwnProperty('disToken2Last') && (self.$route.name == 'Home' || self.$route.name == 'AccountList')) {
@@ -77,6 +80,7 @@
                     self.$router.replace('/Account/' + lastTmp)
                 }
             } else {
+                self.isAPP = false
                 let storage = window.localStorage
                 let hasAccs = storage.hasOwnProperty('disToken2Accounts')
                 let hasLast = storage.hasOwnProperty('disToken2Last')
