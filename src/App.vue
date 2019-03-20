@@ -31,7 +31,8 @@
                        @change="handleSelect" :value="path">
             <mu-bottom-nav-item title="钱包" value="1" icon="credit_card"></mu-bottom-nav-item>
             <mu-bottom-nav-item title="游戏" value="2" icon="videogame_asset" v-show="canGame"></mu-bottom-nav-item>
-            <mu-bottom-nav-item title="买币" value="3" icon="store" v-show="canOTC"></mu-bottom-nav-item>
+            <mu-bottom-nav-item title="买币" value="3" icon="euro_symbol" v-show="canOTC"></mu-bottom-nav-item>
+            <mu-bottom-nav-item title="我的" value="4" icon="face" v-show="canWH"></mu-bottom-nav-item>
             <mu-bottom-nav-item title="创建" value="9" icon="person_add"
                                 v-show="!canGame && !canOTC"></mu-bottom-nav-item>
         </mu-bottom-nav>
@@ -51,6 +52,7 @@
             return {
                 configList: configList,
                 accountList: [],
+                account: null,
                 path: '1',
                 title: title,
                 back: false,
@@ -61,6 +63,7 @@
                 canGame: canGame,
                 canOTC: canOTC,
                 canDLD: canDLD,
+                canWH: canWH,
                 isAPP: false
             }
         },
@@ -144,8 +147,27 @@
                     self.$router.replace('/GameList')
                 }
                 if (value == '3') {
-                    location.href = 'http://c2c.naturetoken.io/'
-                    // self.$router.replace('/Web/0/3')
+                    // if (window.localStorage.hasOwnProperty('disToken2Last')) {
+                    //     let lastTmp = window.localStorage['disToken2Last']
+                    //     self.account = null
+                    //     let tmp = self.accountList
+                    //     for (let i in tmp) {
+                    //         if (tmp[i].id == lastTmp) {
+                    //             self.account = tmp[i]
+                    //         }
+                    //     }
+                    //     if (self.account == null) {
+                    //         self.$alert('请先在钱包中选中一个账户', '提示', {type: 'error'})
+                    //     } else {
+                    //         location.href = `http://c2c.naturetoken.io/?netId=${self.account.netId}&accName=${self.account.name}`
+                    //     }
+                    // } else {
+                    //     self.$alert('请先在钱包中选中一个账户', '提示', {type: 'error'})
+                    // }
+                    location.href = `http://c2c.naturetoken.io/`
+                }
+                if (value == '4') {
+                    location.href = 'http://c2c.naturetoken.io/pay/'
                 }
                 if (value == '9') {
                     self.$router.replace('/CreateAccount')
@@ -478,6 +500,7 @@
                                     }
                                     let eos = Eos(config)
                                     eos.contract(code).then(contract => {
+                                        // console.log(code, from, to, quantity, memo)
                                         contract.transfer(from, to, quantity, memo).then(result => {
                                             // console.log(result)
                                             loading.close()

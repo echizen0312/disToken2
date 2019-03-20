@@ -3,7 +3,7 @@
         <mu-paper class="account-item" :z-depth="3" v-for="(game, index) in games"
                   :key="'01_' + index"
                   v-if="configList[game.netId] != undefined"
-                  @click="checkGame(game)">
+                  @click="checkGame2(game)">
             <div class="account-item-head" :style="{backgroundColor: configList[game.netId].netColor}"></div>
             <div class="account-item-top">
                 <div class="account-item-top-center">
@@ -56,6 +56,7 @@
             return {
                 configList: configList,
                 accountList: this.$parent.accountList,
+                account: null,
                 games: games,
                 nowGame: null,
                 openAlert: false,
@@ -68,6 +69,24 @@
         created: function () {
             let self = this
             self.$emit('setTop', {back: false, add: false, qr: false, scan: false, path: '2'})
+            let storage = window.localStorage
+            let hasLast = storage.hasOwnProperty('disToken2Last')
+            if (hasLast) {
+                let lastTmp = storage['disToken2Last']
+                self.id = lastTmp
+                self.account = null
+                let tmp = self.$parent.accountList
+                for (let i in tmp) {
+                    if (tmp[i].id == self.id) {
+                        self.account = tmp[i]
+                    }
+                }
+                if (self.account == null) {
+                    self.$alert('请先在钱包中选中一个账户', '提示', {type: 'error'})
+                }
+            } else {
+                self.$alert('请先在钱包中选中一个账户', '提示', {type: 'error'})
+            }
         },
         methods: {
             canUse(obj) {
@@ -112,6 +131,23 @@
                 let self = this
                 if (self.nowGame != null && self.form.nowAccountName != null) {
                     let url = `${self.nowGame.address}?netId=${self.nowGame.netId}&accName=${self.form.nowAccountName}`
+                    location.href = url
+                }
+            },
+            checkGame2(gm) {
+                let self = this
+                console.log(self.account)
+                if (gm.netId == self.account.netId) {
+                    self.nowGame = gm
+                    self.goGame2()
+                } else {
+                    self.$alert('当前账户不在这条链上，不能玩', '提示', {type: 'error'})
+                }
+            },
+            goGame2() {
+                let self = this
+                if (self.nowGame != null && self.account != null) {
+                    let url = `${self.nowGame.address}?netId=${self.nowGame.netId}&accName=${self.account.name}`
                     location.href = url
                 }
             }

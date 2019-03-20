@@ -1,8 +1,8 @@
 <template>
     <div style="width: 100%; padding: 10px; max-width: 600px; margin: 0 auto;">
-        <!--<mu-card v-if="!isOver && configObj.eosAddress == 'http://39.105.44.204:8888' && symbol == 'NXT'" style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">-->
-        <mu-card v-if="!isOver && configObj.netId == '999' && (symbol == 'NXT' || symbol == 'EOS' || symbol == 'THK')"
-                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
+        <mu-card
+                v-if="!isOver && configObj.netId == '999' && (symbol == 'NXT' || symbol == 'EOS' || symbol == 'THK' || symbol == 'TMP' || symbol == 'RBCT' || symbol == 'RDCT')"
+                style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="主链转到NatureToken"></mu-card-title>
             <mu-divider></mu-divider>
             <div class="account-item-head" :style="{backgroundColor: configObj.netColor}"></div>
@@ -30,7 +30,7 @@
             </div>
         </mu-card>
         <mu-card
-                v-if="!isOver && configObj.netId == '002' && (symbol == 'NXT' || symbol == 'EOS' || symbol == 'THK')"
+                v-if="!isOver && configObj.netId == '002' && (symbol == 'NXT' || symbol == 'EOS' || symbol == 'THK' || symbol == 'TMP' || symbol == 'RBCT' || symbol == 'RDCT')"
                 style="width: 100%; margin-bottom: 10px; text-align: left; position: relative;">
             <mu-card-title title="NatureToken转到主链"></mu-card-title>
             <mu-divider></mu-divider>
@@ -119,18 +119,15 @@
                         let quantity = s + ' ' + self.symbol
                         let t_to = ''
                         let t_memo = ''
-                        // if (configObj.eosAddress == 'http://39.105.44.204:8888') {configObj.netId == '999'
                         if (self.configObj.netId == '999') {
                             t_to = 'naturetokenp'
                             t_memo = self.form.to + '@NatureToken@' + self.form.memo
 
                         }
-                        // if (configObj.eosAddress == 'http://39.105.44.204:8888') {
                         if (self.configObj.netId == '002') {
                             t_to = 'naturetokenc'
                             t_memo = self.form.to + '@MainNet@' + self.form.memo
                         }
-
                         self.$parent.transfer(self.configObj.netId, self.account, self.code, quantity, self.account.name, t_to, t_memo, '', function (r) {
                             if (r.success) {
                                 // console.log(r)
@@ -145,57 +142,6 @@
                                 self.$alert(r.msg, '提示', {type: 'error'})
                             }
                         })
-
-                        // self.$prompt('请输入交易密码', '提示', {inputType: 'password'}).then(data => {
-                        //     const loading = self.$loading()
-                        //     setTimeout(function () {
-                        //         if (data.result && data.value != undefined && data.value != '') {
-                        //             let bytes = CryptoJS.AES.decrypt(self.account.key, data.value)
-                        //             let plaintext = bytes.toString(CryptoJS.enc.Utf8)
-                        //             self.isTring = true
-                        //             let config = self.config
-                        //             config.keyProvider = plaintext
-                        //             config.authorization = `${self.account.name}@active`
-                        //             let eos = Eos(config)
-                        //             let quantity = s + ' ' + self.nowToken.name
-                        //             let t_to = ''
-                        //             let t_memo = ''
-                        //             if (config.httpEndpoint == 'http://39.105.44.204:8888') {
-                        //                 t_to = 'naturetokenp'
-                        //                 t_memo = self.form.to + '@NatureToken@' + self.form.memo
-                        //             } else {
-                        //                 t_to = 'naturetokenc'
-                        //                 t_memo = self.form.to + '@MainNet@' + self.form.memo
-                        //             }
-                        //             eos.contract(self.nowToken.account).then(con => {
-                        //                 con.transfer(self.account.name, t_to, quantity, t_memo).then(result => {
-                        //                     let trx_id = result.transaction_id
-                        //                     self.trx_id = trx_id
-                        //                     loading.close()
-                        //                     self.isTring = false
-                        //                     self.isOver = true
-                        //                     self.$alert('转账成功', '提示', {type: 'success'}).then(() => {
-                        //                         self.$router.go(-2);
-                        //                     })
-                        //                 }).catch(error => {
-                        //                     loading.close()
-                        //                     console.log(error)
-                        //                     self.isTring = false
-                        //                     self.$alert('转账失败', '提示', {type: 'error'})
-                        //                 })
-                        //             }).catch(error => {
-                        //                 loading.close()
-                        //                 console.log(error)
-                        //                 self.isTring = false
-                        //                 self.$alert('转账失败', '提示', {type: 'error'})
-                        //             })
-                        //         } else {
-                        //             loading.close()
-                        //         }
-                        //     }, 500)
-                        // }).catch(e => {
-                        //     console.log(e)
-                        // })
                     }
                 }
             },

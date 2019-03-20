@@ -27,7 +27,7 @@
                     <div style="margin-bottom: 20px; display: flex; justify-content: space-between;">
                         <mu-button color="primary" @click="goTransferList">转账记录</mu-button>
                         <mu-button color="purple" @click="goChange"
-                                   v-if="(symbol == 'NXT' || symbol == 'EOS' || symbol == 'THK') && configObj.canChange">
+                                   v-if="(symbol == 'NXT' || symbol == 'EOS' || symbol == 'THK' || symbol == 'TMP' || symbol == 'RBCT' || symbol == 'RDCT') && configObj.canChange">
                             跨链转账
                         </mu-button>
                         <mu-button color="success" @click="transferBalance">提交</mu-button>
