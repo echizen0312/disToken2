@@ -147,24 +147,24 @@
                     self.$router.replace('/GameList')
                 }
                 if (value == '3') {
-                    // if (window.localStorage.hasOwnProperty('disToken2Last')) {
-                    //     let lastTmp = window.localStorage['disToken2Last']
-                    //     self.account = null
-                    //     let tmp = self.accountList
-                    //     for (let i in tmp) {
-                    //         if (tmp[i].id == lastTmp) {
-                    //             self.account = tmp[i]
-                    //         }
-                    //     }
-                    //     if (self.account == null) {
-                    //         self.$alert('请先在钱包中选中一个账户', '提示', {type: 'error'})
-                    //     } else {
-                    //         location.href = `http://c2c.naturetoken.io/?netId=${self.account.netId}&accName=${self.account.name}`
-                    //     }
-                    // } else {
-                    //     self.$alert('请先在钱包中选中一个账户', '提示', {type: 'error'})
-                    // }
-                    location.href = `http://c2c.naturetoken.io/`
+                    if (window.localStorage.hasOwnProperty('disToken2Last')) {
+                        let lastTmp = window.localStorage['disToken2Last']
+                        self.account = null
+                        let tmp = self.accountList
+                        for (let i in tmp) {
+                            if (tmp[i].id == lastTmp) {
+                                self.account = tmp[i]
+                            }
+                        }
+                        if (self.account == null) {
+                            self.$alert('请先在钱包中选中一个账户', '提示', {type: 'error'})
+                        } else {
+                            location.href = `http://c2c.naturetoken.io/?netId=${self.account.netId}&accName=${self.account.name}`
+                        }
+                    } else {
+                        self.$alert('请先在钱包中选中一个账户', '提示', {type: 'error'})
+                    }
+                    // location.href = `http://c2c.naturetoken.io/`
                 }
                 if (value == '4') {
                     location.href = 'http://c2c.naturetoken.io/pay/'
